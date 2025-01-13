@@ -1,29 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate, Link } from "react-router-dom"; // Import Link for navigation
 import "./Dashboard.css";
+import "./profilesetting.jsx"
 
 const Dashboard = () => {
   const [totalHomes, setTotalHomes] = useState(0);
   const [totalRequests, setTotalRequests] = useState(0);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch total homes
     fetch("/api/homes/count")
       .then((res) => res.json())
-      .then((data) => setTotalHomes(data.totalHomes))
-      .catch((err) => console.error(err));
+      .then((data) => setTotalHomes(data.totalHomes || 0)) // Default to 0 if data is undefined
+      .catch((err) => {
+        console.error(err);
+        //alert("Failed to fetch total homes. Please try again later.");
+      });
 
     // Fetch total requests
     fetch("/api/requests/count")
       .then((res) => res.json())
-      .then((data) => setTotalRequests(data.totalRequests))
-      .catch((err) => console.error(err));
+      .then((data) => setTotalRequests(data.totalRequests || 0)) // Default to 0 if data is undefined
+      .catch((err) => {
+        console.error(err);
+        //alert("Failed to fetch new requests. Please try again later.");
+      });
   }, []);
 
   const handleProfileSettings = () => {
-    // Navigate to the Profile Settings page
-    navigate("/profilesetting");
+    navigate('/update');
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
   };
 
   return (
@@ -33,14 +44,14 @@ const Dashboard = () => {
         <h2>HRMS Admin</h2>
         <ul>
           <li>
-            <a href="/manage-homes">
+            <Link to="/manage-homes">
               <i className="fas fa-home"></i> Manage Homes
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/manage-tenants">
+            <Link to="/manage-tenants">
               <i className="fas fa-users"></i> Manage Tenants
-            </a>
+            </Link>
           </li>
           <li>
             <button onClick={handleProfileSettings} className="profile-settings-btn">
@@ -55,7 +66,7 @@ const Dashboard = () => {
         {/* Header */}
         <div className="header">
           <h1>Welcome, Admin</h1>
-          <button className="logout-btn">Logout</button>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
 
         {/* Widgets Section */}

@@ -13,6 +13,26 @@ const userSchema = new mongoose.Schema(
   { timestamps: true } // Automatically add createdAt and updatedAt
 );
 
+const jwt = require('jsonwebtoken');
+
+const authenticate = (req, res, next) => {
+  const token = req.header('Authorization') && req.header('Authorization').replace('Bearer ', '');
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access Denied' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'your-secret-key');
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(400).json({ message: 'Invalid Token' });
+  }
+};
+
+module.exports = authenticate;
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

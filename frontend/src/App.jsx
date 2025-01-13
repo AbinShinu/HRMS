@@ -5,6 +5,7 @@ import LoginForm from './login';
 import Registration from './Registration';
 import Dashboard from './Admindashboard';
 import HomePage2 from './Home2';
+import ProfileSettings from './profilesetting';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route path="/signup" element={<Registration />} />
           <Route path="/admindashboard" element={<Dashboard />} />
           <Route path="/home2" element={<HomePage2/>} />
+          <Route path="/update" element={<ProfileSettings/>} />
             </Routes>
         </Router>
     );

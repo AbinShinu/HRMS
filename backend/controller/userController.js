@@ -13,6 +13,26 @@ const getuser = async (req,res) => {
     
     
 }
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract the user ID from the request parameters
+
+    // Find user by ID
+    const user = await User.findById(id);
+
+    // Check if user exists
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Respond with the user data
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -30,19 +50,28 @@ const login = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ userId: user._id }, 'your_secret_key', { expiresIn: '1h' });
+    const token = jwt.sign(
+      { userId: user._id, role: user.role }, // Include role in the token payload
+      'your_secret_key',
+      { expiresIn: '1h' }
+    );
 
-    // Respond with user details and token
+    // Respond with user details, role, and token
     return res.status(200).json({
       message: "Login Successful",
       token: token,
-      userId: user._id, // Send the userId as part of the response
+      userId: user._id, // Send the userId
+      user: {
+        email: user.email,
+        role: user.role, // Include role in the response
+      },
     });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 
 
@@ -149,4 +178,26 @@ const godashboard = async (req, res) => {
     }
   };
 
-module.exports={getuser,login,adduser,updateuser,deleteuser,godashboard}
+  const jwt = require('jsonwebtoken');
+
+const authenticate = (req, res, next) => {
+  const token = req.header('Authorization') && req.header('Authorization').replace('Bearer ', '');
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access Denied' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, 'your-secret-key');
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(400).json({ message: 'Invalid Token' });
+  }
+};
+
+
+ 
+
+
+module.exports={getuser,login,adduser,updateuser,deleteuser,godashboard,authenticate,getUserById}

@@ -21,10 +21,15 @@ const LoginForm = () => {
         alert("Login Successful");
         console.log("Server Response", response.data);
 
-        // Get the user role from the response
-        const userRole = response.data.user.role; // Assuming 'role' is returned
+        // Extract userId, token, and role from the response
+        const { userId, token, user } = response.data;
+
+        // Save userId and token in localStorage
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("authToken", token);
 
         // Redirect based on user role
+        const userRole = user.role; // Assuming 'role' is returned
         if (userRole === "admin") {
           navigate("/Admindashboard"); // Redirect to Admin Dashboard
         } else if (userRole === "tenant") {
@@ -32,8 +37,14 @@ const LoginForm = () => {
         }
       })
       .catch((error) => {
-        console.error(error);
-        alert("Login failed. Please try again.");
+        console.error("Login Error", error);
+
+        // Handle specific error cases
+        if (error.response && error.response.data) {
+          alert(error.response.data.message || "Login failed. Please try again.");
+        } else {
+          alert("An unexpected error occurred. Please try again later.");
+        }
       });
   };
 
