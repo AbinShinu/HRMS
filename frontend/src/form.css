@@ -1,0 +1,80 @@
+.form-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #3a0ffa;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  color: #ad1b1b;
+  background-color: #b2c7dd;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #0056b3;
+}
+
+/* Add this section to ensure error messages are visible */
+.error-text {
+  color: #ff0000; /* Bright red color for better visibility */
+  font-size: 12px; /* Smaller size to fit below input fields */
+  margin-top: 5px; /* Add space between input and error message */
+  font-weight: bold; /* Bold text for emphasis */
+}
+.signup-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.signup-button {
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: #2831a7;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.signup-button:hover {
+  background-color: #218838;
+}
+

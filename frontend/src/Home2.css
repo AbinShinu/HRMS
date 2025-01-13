@@ -1,0 +1,116 @@
+.homepage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Full page height */
+    background-color: #1a1a1a; /* Dark background */
+    color: #ffffff; /* Light text */
+}
+
+.homepage-header {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(90deg, #0044cc, #0088ff); /* Blue gradient */
+    color: white;
+}
+
+.homepage-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.main-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.search-bar-container {
+    width: 20%; /* Left side width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-bar {
+    width: 80%;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+}
+
+.home-list {
+    flex-grow: 1; /* Stretches to fill remaining space */
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    justify-items: center; /* Centers the cards */
+}
+
+.home-card {
+    background-color: #2a2a2a; /* Slightly lighter gray */
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s;
+    width: 300px;
+}
+
+.home-card:hover {
+    transform: scale(1.05);
+}
+
+.home-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.home-details {
+    padding: 15px;
+    text-align: center;
+}
+
+.view-details {
+    color: #0088ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.view-details:hover {
+    text-decoration: underline;
+}
+
+.auth-links {
+    position: absolute; /* Position it relative to the viewport */
+    top: 20px; /* Adjust the distance from the top */
+    right: 20px; /* Move it to the left corner */
+}
+
+.logout-btn {
+    background-color: #070c11; /* Optional: Update color as needed */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logout-btn:hover {
+    background-color: #0056b3; /* Optional: Hover effect */
+}
+
+
+.homepage-footer {
+    text-align: center;
+    padding: 15px;
+    background-color: #0044cc; /* Blue footer */
+    color: white;
+    font-size: 0.9rem; /* Slightly smaller font for footer */
+    flex-shrink: 0; /* Keeps footer at the bottom */
+}
