@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom"; // Import Link for navigation
 import "./Dashboard.css";
-import "./profilesetting.jsx"
+
 
 const Dashboard = () => {
   const [totalHomes, setTotalHomes] = useState(0);
@@ -28,10 +28,7 @@ const Dashboard = () => {
       });
   }, []);
 
-  const handleProfileSettings = () => {
-    navigate('/update');
-  };
-
+  
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
@@ -54,9 +51,9 @@ const Dashboard = () => {
             </Link>
           </li>
           <li>
-            <button onClick={handleProfileSettings} className="profile-settings-btn">
+          <Link to="/profilesetting">
               <i className="fas fa-user-cog"></i> Profile Settings
-            </button>
+              </Link>
           </li>
         </ul>
       </div>
