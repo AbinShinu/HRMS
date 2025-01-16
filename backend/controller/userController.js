@@ -1,5 +1,6 @@
 const User = require("../models/User.js")
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 
 const getuser = async (req,res) => {
 
@@ -14,22 +15,22 @@ const getuser = async (req,res) => {
     
 }
 const getUserById = async (req, res) => {
+  const userId = req.params.id;  // This should be a valid ObjectId
+  
+  // Ensure that the userId is a valid ObjectId before querying
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ error: 'Invalid user ID format' });
+  }
+  
   try {
-    const { id } = req.params; // Extract the user ID from the request parameters
-
-    // Find user by ID
-    const user = await User.findById(id);
-
-    // Check if user exists
+    const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ error: 'User not found' });
     }
-
-    // Respond with the user data
     res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching user by ID:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error fetching user by ID:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -112,7 +113,10 @@ const adduser = async (req, res) => {
   };
   const updateuser = async (req, res) => {
     try {
-      const { userId, name, username, email, password } = req.body;
+      const { name, username, email, password } = req.body;
+  
+      // Extract userId from the token (attached by the middleware)
+      const userId = req.user.userId;
   
       // Find the user by ID
       const user = await User.findById(userId);
@@ -150,6 +154,7 @@ const adduser = async (req, res) => {
     }
   };
   
+  
 const deleteuser = async (req,res) => {
     try{
 
@@ -181,18 +186,18 @@ const godashboard = async (req, res) => {
   const jwt = require('jsonwebtoken');
 
 const authenticate = (req, res, next) => {
-  const token = req.header('Authorization') && req.header('Authorization').replace('Bearer ', '');
+  const token = req.header('Authorization')?.split(' ')[1]; // Extract the token
 
   if (!token) {
-    return res.status(401).json({ message: 'Access Denied' });
+    return res.status(403).json({ message: 'No token provided' });
   }
 
   try {
-    const decoded = jwt.verify(token, 'your-secret-key');
-    req.user = decoded;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach decoded user info to the request
     next();
-  } catch (err) {
-    return res.status(400).json({ message: 'Invalid Token' });
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid token' });
   }
 };
 
