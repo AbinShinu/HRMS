@@ -33,6 +33,7 @@ const Dashboard = () => {
     localStorage.clear();
     navigate("/login");
   };
+  
 
   return (
     <div className="dashboard">
@@ -41,7 +42,7 @@ const Dashboard = () => {
         <h2>HRMS Admin</h2>
         <ul>
           <li>
-            <Link to="/manage-homes">
+            <Link to="/addhome">
               <i className="fas fa-home"></i> Manage Homes
             </Link>
           </li>
@@ -51,9 +52,14 @@ const Dashboard = () => {
             </Link>
           </li>
           <li>
-          <Link to="/profilesetting">
+          <Link to="/profilesettings">
               <i className="fas fa-user-cog"></i> Profile Settings
               </Link>
+          </li>
+          <li>
+            <button onClick={handleLogout}>
+              <i className="fas fa-sign-out-alt"></i> Logout
+            </button>
           </li>
         </ul>
       </div>
@@ -63,7 +69,6 @@ const Dashboard = () => {
         {/* Header */}
         <div className="header">
           <h1>Welcome, Admin</h1>
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
         </div>
 
         {/* Widgets Section */}

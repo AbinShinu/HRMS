@@ -1,19 +1,45 @@
 const User = require("../models/User.js")
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const Home = require('../models/Home.js');
 
 const getuser = async (req,res) => {
 
-    try{
-        const users = await User.find({})
-        res.status(200).json(users) 
-    }
-    catch{
-        res.status(500).json({error:error});
-        }
-    
+  try{
+      const users = await User.find({})
+      res.status(200).json(users) 
+  }
+  catch{
+      res.status(500).json({error:error});
+      }
+  
+  
+}
+const gethome = async (req,res) => {
+  try{
+      const homes = await Home.find({})
+      res.status(200).json(homes) 
+  }
+  catch{
+      res.status(500).json({error:error});
+      }
     
 }
+const fetchdata = async (req,res) => {
+  try {
+    const userId = req.user.userId; // Extract userId from token
+    const user = await User.findById(userId).select('-password'); // Exclude password field
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user); // Respond with the user data
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+  }
 const getUserById = async (req, res) => {
   const userId = req.params.id;  // This should be a valid ObjectId
   
@@ -111,7 +137,7 @@ const adduser = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
-  const updateuser = async (req, res) => {
+  const profilesettings = async (req, res) => {
     try {
       const { name, username, email, password } = req.body;
   
@@ -127,7 +153,14 @@ const adduser = async (req, res) => {
       // Update user details if provided
       if (name) user.name = name;
       if (username) user.username = username;
-      if (email) user.email = email;
+      if (email) {
+        // Add validation for email format (optional)
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!emailRegex.test(email)) {
+          return res.status(400).json({ message: "Invalid email format" });
+        }
+        user.email = email;
+      }
   
       // If password is provided, hash it before saving
       if (password) {
@@ -146,6 +179,7 @@ const adduser = async (req, res) => {
           username: user.username,
           email: user.email,
           role: user.role,
+          phone: user.phone,  // Including phone in response if available
         },
       });
     } catch (error) {
@@ -153,6 +187,7 @@ const adduser = async (req, res) => {
       res.status(500).json({ message: "Internal Server Error" });
     }
   };
+  
   
   
 const deleteuser = async (req,res) => {
@@ -201,8 +236,49 @@ const authenticate = (req, res, next) => {
   }
 };
 
+const addHome = async (req, res) => {
+  try {
+    // Check if a home with the same location and category already exists
+    const existingHome = await Home.findOne({
+      location: req.body.location,
+      category: req.body.category,
+      price: req.body.price,
+    });
+
+    if (existingHome) {
+      return res.status(400).json({ error: "A home with the same details already exists" });
+    }
+
+    // Prepare the home object
+    const homeItem = {
+      location: req.body.location,
+      price: req.body.price,
+      category: req.body.category,
+      contactPerson: {
+        name: req.body.contactPerson.name,
+        phone: req.body.contactPerson.phone,
+        email: req.body.contactPerson.email,
+      },
+      status: req.body.status || "available", // Default status is 'available'
+      availability: req.body.availability !== undefined ? req.body.availability : true,
+    };
+
+    // Create a new home instance
+    const home = new Home(homeItem);
+
+    // Save the home to the database
+    await home.save();
+
+    // Respond with the newly created home
+    res.status(201).json({ message: "Home added successfully", home });
+  } catch (error) {
+    console.error("Error adding home:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
  
 
 
-module.exports={getuser,login,adduser,updateuser,deleteuser,godashboard,authenticate,getUserById}
+module.exports={getuser,login,adduser,profilesettings,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,fetchdata}

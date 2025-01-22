@@ -10,28 +10,28 @@ const HomePage2 = () => {
             title: 'Cozy Apartment in the City',
             location: 'Downtown, Mumbai',
             rent: 25000,
-            image: 'https://i.pinimg.com/originals/99/5a/8c/995a8c342b93481f70a4d16f14afdd18.jpg',
+            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492968/city_apartment_xp2mbt.jpg',
         },
         {
             _id: '2',
             title: 'Luxury Villa with Pool',
             location: 'Suburbs, Bangalore',
             rent: 60000,
-            image: 'https://img.staticmb.com/mbcontent/images/uploads/2022/12/Most-Beautiful-House-in-the-World.jpg',
+            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492968/pool_apartment_zg832u.jpg',
         },
         {
             _id: '3',
             title: 'Modern Duplex with Garden',
             location: 'Pune, Maharashtra',
             rent: 45000,
-            image: 'https://cdn.gobankingrates.com/wp-content/uploads/2019/07/Beautiful-luxury-home-exterior-iStock-1054759884.jpg?quality=80',
+            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492968/garden_apartment_yxv2ow.jpg',
         },
         {
             _id: '4',
             title: 'Beachfront Cottage',
             location: 'Goa, India',
             rent: 70000,
-            image: 'https://smithbrothersconstruction.com/wp-content/uploads/2014/04/3KapaluaPl-566-Edit.jpg',
+            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492967/beachfront_apartment_bl2iy6.jpg',
         },
     ]);
 
@@ -61,7 +61,7 @@ const HomePage2 = () => {
                 <nav>
                     <ul>
                         <li>
-                            <Link to="/profile" className="sidebar-link">Profile Settings</Link>
+                            <Link to="/profilesettings" className="sidebar-link">Profile Settings</Link>
                         </li>
                         <li>
                             <Link to="/applications" className="sidebar-link">Track Applications</Link>

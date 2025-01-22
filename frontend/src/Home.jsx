@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Home.css'; // Ensure the styles are updated here
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
     const [homes, setHomes] = useState([
@@ -35,6 +35,9 @@ const HomePage = () => {
             image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492967/beachfront_apartment_bl2iy6.jpg',
         },
     ]);
+    
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // Add authentication state
+    const navigate = useNavigate();
 
     // Fetch data from the backend when the component mounts
     useEffect(() => {
@@ -47,7 +50,22 @@ const HomePage = () => {
             .catch((error) => {
                 console.error('Error fetching homes:', error);
             });
+
+        // Check if user is logged in (this can be based on a token or session)
+        // Example: Check localStorage for a login token
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            setIsLoggedIn(true);
+        }
     }, []);
+
+    const handleViewDetails = (homeId) => {
+        if (isLoggedIn) {
+            navigate(`/homes/${homeId}`);
+        } else {
+            navigate('/login'); // Redirect to login if not logged in
+        }
+    };
 
     return (
         <div className="homepage">
@@ -72,12 +90,12 @@ const HomePage = () => {
                                 <h2>{home.title}</h2>
                                 <p>{home.location}</p>
                                 <p>₹{home.rent}/month</p>
-                                <Link
-                                    to={`/homes/${home._id}`}
+                                <button
+                                    onClick={() => handleViewDetails(home._id)}
                                     className="view-details"
                                 >
                                     View Details
-                                </Link>
+                                </button>
                             </div>
                         </div>
                     ))
