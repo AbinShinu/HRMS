@@ -16,6 +16,11 @@ const homeSchema = new mongoose.Schema({
     required: true 
   }, // Home availability
   availability: { type: Boolean, default: true },
+  imageUrl: { 
+    type: String, 
+    required: false, 
+    default: null 
+  }, // Image URL or path
   applicants: [
     {
       tenantId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

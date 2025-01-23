@@ -15,18 +15,20 @@ const LoginForm = () => {
 
   const onSubmit = (data) => {
     console.log("Form Data: ", data);
+  
     axios
       .post("http://localhost:3000/users/login", data) // Ensure correct API endpoint
       .then((response) => {
-        alert("Login Successful");
+        //alert("Login Successful");
         console.log("Server Response", response.data);
-
+  
         const { userId, token, user } = response.data;
-
+  
         // Save userId and token in localStorage
         localStorage.setItem("userId", userId);
-        localStorage.setItem("authToken", token);
-
+        localStorage.setItem("authToken", token); // Use the same key for retrieval
+        console.log("Token in localStorage:", localStorage.getItem("authToken")); // Log the correct key
+  
         // Redirect based on user role
         const userRole = user.role;
         if (userRole === "admin") {
@@ -37,7 +39,7 @@ const LoginForm = () => {
       })
       .catch((error) => {
         console.error("Login Error", error);
-
+  
         // Handle specific error cases
         if (error.response && error.response.data) {
           alert(error.response.data.message || "Login failed. Please try again.");
@@ -46,7 +48,7 @@ const LoginForm = () => {
         }
       });
   };
-
+  
   const goToSignup = () => {
     navigate("/signup");
   };
@@ -79,7 +81,7 @@ const LoginForm = () => {
             {...register("password", {
               required: "Password is required",
               minLength: {
-                value: 8,
+                value: 4,
                 message: "Password must be at least 8 characters",
               },
             })}

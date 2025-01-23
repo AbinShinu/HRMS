@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileSettings = () => {
   const [profile, setProfile] = useState({
@@ -9,16 +10,38 @@ const ProfileSettings = () => {
     phone: '',
   });
   const [isEditing, setIsEditing] = useState(false);
+  const [userId, setUserId] = useState(null);  // State to store userId
+  const [token, setToken] = useState(null);    // State to store token
+  const navigate = useNavigate(); // Initialize navigate
+
 
   useEffect(() => {
-    // Fetch user profile on component mount
+    const token = localStorage.getItem('authToken');
+    const userId = localStorage.getItem('userId');
+    setToken(token);
+    setUserId(userId);
+
+    if (!token) {
+      console.error('Token is missing from localStorage');
+      alert('You need to log in again.');
+      navigate('/login'); // Use navigate to redirect to login
+      return;
+    }
+
+    console.log('Authorization Token:', token); // Log the token for debugging
+
     axios
-      .get('http://localhost:3000/users', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }, // Send the token here
+      .get(`http://localhost:3000/users/fetch/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => setProfile(response.data))
-      .catch((error) => console.error('Error fetching profile:', error));
-  }, []);
+      .then((response) => {
+        console.log('Profile fetched:', response.data);
+        setProfile(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching profile:', error.response ? error.response.data : error.message);
+      });
+  }, [navigate]); // Add navigate to dependency array to ensure it's up-to-date
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -27,10 +50,10 @@ const ProfileSettings = () => {
   const handleSave = () => {
     axios
       .put(
-        '/http://localhost:3000/users/profilesettings',
-        { ...profile },
+        `http://localhost:3000/users/profilesettings/${userId}`, // Dynamic URL with userId
+        { ...profile }, // The updated profile data
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }, // Send the token when saving the profile
+          headers: { Authorization: `Bearer ${token}` }, // Send the token for authorization
         }
       )
       .then((response) => {
@@ -38,7 +61,10 @@ const ProfileSettings = () => {
         setIsEditing(false);
         alert('Profile updated successfully');
       })
-      .catch((error) => console.error('Error updating profile:', error));
+      .catch((error) => {
+        console.error('Error updating profile:', error.response ? error.response.data : error.message);
+        alert('Failed to update profile. Please try again.');
+      });
   };
 
   return (

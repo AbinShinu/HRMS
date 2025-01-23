@@ -25,21 +25,28 @@ const gethome = async (req,res) => {
       }
     
 }
-const fetchdata = async (req,res) => {
+const fetchdata = async (req, res) => {
   try {
-    const userId = req.user.userId; // Extract userId from token
-    const user = await User.findById(userId).select('-password'); // Exclude password field
+    const userId = req.user.userId;
 
+    // Validate userId format
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID format' });
+    }
+
+    const user = await User.findById(userId).select('-password');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json(user); // Respond with the user data
+    res.status(200).json(user);
   } catch (error) {
     console.error('Error fetching user profile:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
-  }
+};
+
+
 const getUserById = async (req, res) => {
   const userId = req.params.id;  // This should be a valid ObjectId
   
@@ -79,7 +86,7 @@ const login = async (req, res) => {
     // Generate JWT token
     const token = jwt.sign(
       { userId: user._id, role: user.role }, // Include role in the token payload
-      'your_secret_key',
+      'gfgfg454$h76@',
       { expiresIn: '1h' }
     );
 
@@ -139,10 +146,14 @@ const adduser = async (req, res) => {
   };
   const profilesettings = async (req, res) => {
     try {
-      const { name, username, email, password } = req.body;
-  
-      // Extract userId from the token (attached by the middleware)
       const userId = req.user.userId;
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ error: 'Invalid user ID format' });
+      }
+      const { name, username, email, password, phone } = req.body;
+      
+      // Extract userId from the token (attached by the middleware)
+      
   
       // Find the user by ID
       const user = await User.findById(userId);
@@ -159,8 +170,12 @@ const adduser = async (req, res) => {
         if (!emailRegex.test(email)) {
           return res.status(400).json({ message: "Invalid email format" });
         }
+        
         user.email = email;
       }
+  
+      // Update phone number if provided
+      if (phone) user.phone = phone;
   
       // If password is provided, hash it before saving
       if (password) {
@@ -186,7 +201,8 @@ const adduser = async (req, res) => {
       console.error("Error updating profile:", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
-  };
+};
+
   
   
   
@@ -220,21 +236,25 @@ const godashboard = async (req, res) => {
 
   const jwt = require('jsonwebtoken');
 
-const authenticate = (req, res, next) => {
-  const token = req.header('Authorization')?.split(' ')[1]; // Extract the token
-
-  if (!token) {
-    return res.status(403).json({ message: 'No token provided' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach decoded user info to the request
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Invalid token' });
-  }
-};
+  const authenticate = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+  
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(400).json({ message: 'Token is missing or invalid' });
+    }
+  
+    const token = authHeader.split(' ')[1]; // Extract the token after "Bearer"
+    try {
+      const decoded = jwt.verify(token, 'gfgfg454$h76@'); // Use your JWT secret
+      req.user = decoded; // Attach decoded data (e.g., userId) to the request
+      next();
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+  };
+  
+  
 
 const addHome = async (req, res) => {
   try {
@@ -248,6 +268,14 @@ const addHome = async (req, res) => {
     if (existingHome) {
       return res.status(400).json({ error: "A home with the same details already exists" });
     }
+    const image1= req.files.image1 && req.files.image1[0].filter((item)=>item!== undefined)
+    let imageUrl = await Promise.all(
+      image1.map(async (item) => {
+        let result = await cloudinary.uploader.upload(item.path, {resource_type: "image"});
+        return result.secure_url;
+      })
+    );
+    console.log(image1)
 
     // Prepare the home object
     const homeItem = {

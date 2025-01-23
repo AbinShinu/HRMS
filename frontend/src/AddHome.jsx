@@ -10,8 +10,29 @@ const AddHomeForm = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    const formData = new FormData();
+    
+    // Append all form data to the FormData object
+    formData.append("location", data.location);
+    formData.append("price", data.price);
+    formData.append("category", data.category);
+    formData.append("contactPerson.name", data.contactPerson.name);
+    formData.append("contactPerson.phone", data.contactPerson.phone);
+    formData.append("contactPerson.email", data.contactPerson.email);
+    formData.append("status", data.status);
+    formData.append("availability", data.availability);
+
+    // Append the selected image file
+    if (data.homeImage[0]) {
+      formData.append("homeImage", data.homeImage[0]);
+    }
+
     try {
-      const response = await axios.post("http://localhost:3000/users/addhome", data);
+      const response = await axios.post("http://localhost:3000/users/addhome", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       alert("Home added successfully!");
       console.log("Server Response:", response.data);
     } catch (error) {
@@ -106,6 +127,16 @@ const AddHomeForm = () => {
             <option value="true">Available</option>
             <option value="false">Not Available</option>
           </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="homeImage">Home Image:</label>
+          <input
+            id="homeImage"
+            type="file"
+            {...register("homeImage", { required: "Home image is required" })}
+          />
+          {errors.homeImage && <p className="error-text">{errors.homeImage.message}</p>}
         </div>
 
         <button type="submit" className="submit-button">Add Home</button>
