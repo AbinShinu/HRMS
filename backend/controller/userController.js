@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const Home = require('../models/Home.js');
 const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
 
 const getuser = async (req,res) => {
 
@@ -270,36 +271,13 @@ const godashboard = async (req, res) => {
         return res.status(400).json({ error: "A home with the same details already exists" });
       }
   
-      // Ensure there's an image and grab the first file if it exists
-      const image1 = req.files.image1 && req.files.image1[0];
-  
-      if (!image1) {
-        return res.status(400).json({ error: "Image is required" });
-      }
-  
-      // Upload the image to Cloudinary
-      const result = await cloudinary.uploader.upload(image1.path, { resource_type: "image" });
-      const imageUrl = result.secure_url;
-  
-      console.log("Uploaded Image URL:", imageUrl);
-
-  
-      // Access contact person fields directly from the request body
-      // const contactPersonName = req.body.contactPersonName;
-      // const contactPersonPhone = req.body.contactPersonPhone;
-      // const contactPersonEmail = req.body.contactPersonEmail;
-  
-      // // Validate that name, phone, and email are provided
-      // if (!contactPersonName || !contactPersonPhone || !contactPersonEmail) {
-      //   return res.status(400).json({ error: "Contact person name, phone, and email are required" });
-      // }
   
       // Prepare the home object
       const homeItem = {
         location: req.body.location,
         price: req.body.price,
         category: req.body.category,
-        imageUrl: imageUrl,
+        imageUrl: req.body.homeImageUrl,
         contactPersonName: req.body.contactPersonName,
         contactPersonPhone: req.body.contactPersonPhone,
         contactPersonEmail: req.body.contactPersonEmail,
@@ -324,10 +302,4 @@ const godashboard = async (req, res) => {
   
   
   
-
-
-
- 
-
-
 module.exports={getuser,login,adduser,profilesettings,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,fetchdata}

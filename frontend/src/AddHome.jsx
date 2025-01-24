@@ -10,33 +10,54 @@ const AddHomeForm = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log("Form Data:", data); // Log the form data to verify submission
-
+    console.log("Form Data:", data);
+  
     const formData = new FormData();
-
-    // Append form fields to formData
+  
+    // Prepare the form fields
     formData.append("location", data.location);
     formData.append("price", data.price);
     formData.append("category", data.category);
-    formData.append("contactPersonName", data.contactPersonName); // Updated field name
-    formData.append("contactPersonPhone", data.contactPersonPhone); // Updated field name
-    formData.append("contactPersonEmail", data.contactPersonEmail); // Updated field name
+    formData.append("contactPersonName", data.contactPersonName);
+    formData.append("contactPersonPhone", data.contactPersonPhone);
+    formData.append("contactPersonEmail", data.contactPersonEmail);
     formData.append("status", data.status);
-    formData.append("availability", data.availability === "true"); // Convert to boolean
-
-    // Check if homeImage is present
-    if (data.homeImage && data.homeImage[0]) {
-      formData.append("homeImage", data.homeImage[0]);
-    } else {
-      console.error("No image selected");
-    }
-
+    formData.append("availability", data.availability === "true");
+  
     try {
+      // Check if a file is selected
+      if (data.homeImage && data.homeImage[0]) {
+        const imageFile = data.homeImage[0];
+  
+        // Upload the image to the backend
+        const uploadFormData = new FormData();
+        uploadFormData.append("image1", imageFile);
+  
+        const uploadResponse = await axios.post(
+          "http://localhost:3000/users/api/upload", // Adjust the endpoint as needed
+          uploadFormData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+  
+        const imageUrl = uploadResponse.data.imageUrl;
+        console.log("Uploaded Image URL:", imageUrl);
+  
+        // Append the uploaded image URL to the main formData
+        formData.append("homeImageUrl", imageUrl);
+      } else {
+        console.error("No image selected");
+        return;
+      }
+  
+      // Submit the form data to your backend
       const response = await axios.post("http://localhost:3000/users/api/addhome", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+  
       alert("Home added successfully!");
       console.log("Server Response:", response.data);
     } catch (error) {
@@ -44,6 +65,7 @@ const AddHomeForm = () => {
       alert("Failed to add home. Please try again.");
     }
   };
+  
 
   return (
     <div className="form-container">
@@ -147,6 +169,7 @@ const AddHomeForm = () => {
           <input
             id="homeImage"
             type="file"
+            name="image1"
             {...register("homeImage", { required: "Home image is required" })}
           />
           {errors.homeImage && <p className="error-text">{errors.homeImage.message}</p>}

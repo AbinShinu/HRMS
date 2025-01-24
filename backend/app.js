@@ -2,7 +2,7 @@ const express = require('express');
 const userRouter = require('./router/userRouter.js');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
+const fs = require('fs');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -31,6 +31,13 @@ app.get('/', (req, res) => {
 
 // Use User Router
 app.use('/users', userRouter);
+
+const path = "./uploads";
+
+if (!fs.existsSync(path)) {
+  fs.mkdirSync(path);
+}
+
 
 // Initiate DB connection
 main().catch((err) => {
