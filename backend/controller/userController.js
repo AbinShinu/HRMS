@@ -2,6 +2,7 @@ const User = require("../models/User.js")
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const Home = require('../models/Home.js');
+const cloudinary = require('cloudinary').v2;
 
 const getuser = async (req,res) => {
 
@@ -256,54 +257,74 @@ const godashboard = async (req, res) => {
   
   
 
-const addHome = async (req, res) => {
-  try {
-    // Check if a home with the same location and category already exists
-    const existingHome = await Home.findOne({
-      location: req.body.location,
-      category: req.body.category,
-      price: req.body.price,
-    });
+  const addHome = async (req, res) => {
+    try {
+      // Check if a home with the same location and category already exists
+      const existingHome = await Home.findOne({
+        location: req.body.location,
+        category: req.body.category,
+        price: req.body.price,
+      });
+  
+      if (existingHome) {
+        return res.status(400).json({ error: "A home with the same details already exists" });
+      }
+  
+      // Ensure there's an image and grab the first file if it exists
+      const image1 = req.files.image1 && req.files.image1[0];
+  
+      if (!image1) {
+        return res.status(400).json({ error: "Image is required" });
+      }
+  
+      // Upload the image to Cloudinary
+      const result = await cloudinary.uploader.upload(image1.path, { resource_type: "image" });
+      const imageUrl = result.secure_url;
+  
+      console.log("Uploaded Image URL:", imageUrl);
 
-    if (existingHome) {
-      return res.status(400).json({ error: "A home with the same details already exists" });
+  
+      // Access contact person fields directly from the request body
+      // const contactPersonName = req.body.contactPersonName;
+      // const contactPersonPhone = req.body.contactPersonPhone;
+      // const contactPersonEmail = req.body.contactPersonEmail;
+  
+      // // Validate that name, phone, and email are provided
+      // if (!contactPersonName || !contactPersonPhone || !contactPersonEmail) {
+      //   return res.status(400).json({ error: "Contact person name, phone, and email are required" });
+      // }
+  
+      // Prepare the home object
+      const homeItem = {
+        location: req.body.location,
+        price: req.body.price,
+        category: req.body.category,
+        imageUrl: imageUrl,
+        contactPersonName: req.body.contactPersonName,
+        contactPersonPhone: req.body.contactPersonPhone,
+        contactPersonEmail: req.body.contactPersonEmail,
+        status: req.body.status || "available", // Default status is 'available'
+        availability: req.body.availability !== undefined ? req.body.availability : true,
+      };
+      //console.log("Request Body:", req.body);
+  
+      // Create a new home instance
+      const home = new Home(homeItem);
+  
+      // Save the home to the database
+      await home.save();
+  
+      // Respond with the newly created home
+      res.status(201).json({ message: "Home added successfully", home });
+    } catch (error) {
+      console.error("Error adding home:", error);
+      res.status(500).json({ error: error.message });
     }
-    const image1= req.files.image1 && req.files.image1[0].filter((item)=>item!== undefined)
-    let imageUrl = await Promise.all(
-      image1.map(async (item) => {
-        let result = await cloudinary.uploader.upload(item.path, {resource_type: "image"});
-        return result.secure_url;
-      })
-    );
-    console.log(image1)
+  };
+  
+  
+  
 
-    // Prepare the home object
-    const homeItem = {
-      location: req.body.location,
-      price: req.body.price,
-      category: req.body.category,
-      contactPerson: {
-        name: req.body.contactPerson.name,
-        phone: req.body.contactPerson.phone,
-        email: req.body.contactPerson.email,
-      },
-      status: req.body.status || "available", // Default status is 'available'
-      availability: req.body.availability !== undefined ? req.body.availability : true,
-    };
-
-    // Create a new home instance
-    const home = new Home(homeItem);
-
-    // Save the home to the database
-    await home.save();
-
-    // Respond with the newly created home
-    res.status(201).json({ message: "Home added successfully", home });
-  } catch (error) {
-    console.error("Error adding home:", error);
-    res.status(500).json({ error: error.message });
-  }
-};
 
 
  

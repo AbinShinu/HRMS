@@ -2,22 +2,10 @@ const express = require('express');
 const userRouter = require('./router/userRouter.js');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const cloudinary = require('cloudinary').v2;
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Cloudinary Configuration
-cloudinary.config({
-  cloud_name: 'dw72cnkab',
-  api_key: '642976867455911',
-  api_secret: 'kGBHOlKAIhLyiqMG-8ktWShnAlU',
-  secure: true
-});
-
-// Test Cloudinary URL
-const url = cloudinary.url('try1', { transformation: [{ fetch_format: 'auto' }] });
-//console.log('Cloudinary Test URL:', url);
 
 // Middleware setup
 app.use(express.json());

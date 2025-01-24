@@ -10,25 +10,29 @@ const AddHomeForm = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    console.log("Form Data:", data); // Log the form data to verify submission
+
     const formData = new FormData();
-    
-    // Append all form data to the FormData object
+
+    // Append form fields to formData
     formData.append("location", data.location);
     formData.append("price", data.price);
     formData.append("category", data.category);
-    formData.append("contactPerson.name", data.contactPerson.name);
-    formData.append("contactPerson.phone", data.contactPerson.phone);
-    formData.append("contactPerson.email", data.contactPerson.email);
+    formData.append("contactPersonName", data.contactPersonName); // Updated field name
+    formData.append("contactPersonPhone", data.contactPersonPhone); // Updated field name
+    formData.append("contactPersonEmail", data.contactPersonEmail); // Updated field name
     formData.append("status", data.status);
-    formData.append("availability", data.availability);
+    formData.append("availability", data.availability === "true"); // Convert to boolean
 
-    // Append the selected image file
-    if (data.homeImage[0]) {
+    // Check if homeImage is present
+    if (data.homeImage && data.homeImage[0]) {
       formData.append("homeImage", data.homeImage[0]);
+    } else {
+      console.error("No image selected");
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/users/addhome", formData, {
+      const response = await axios.post("http://localhost:3000/users/api/addhome", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -46,6 +50,7 @@ const AddHomeForm = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2>Add New Home</h2>
 
+        {/* Location */}
         <div className="form-group">
           <label htmlFor="location">Location:</label>
           <input
@@ -56,6 +61,7 @@ const AddHomeForm = () => {
           {errors.location && <p className="error-text">{errors.location.message}</p>}
         </div>
 
+        {/* Price */}
         <div className="form-group">
           <label htmlFor="price">Price:</label>
           <input
@@ -66,6 +72,7 @@ const AddHomeForm = () => {
           {errors.price && <p className="error-text">{errors.price.message}</p>}
         </div>
 
+        {/* Category */}
         <div className="form-group">
           <label htmlFor="category">Category:</label>
           <input
@@ -76,42 +83,46 @@ const AddHomeForm = () => {
           {errors.category && <p className="error-text">{errors.category.message}</p>}
         </div>
 
+        {/* Contact Person Name */}
         <div className="form-group">
-          <label htmlFor="contactName">Contact Person Name:</label>
+          <label htmlFor="contactPersonName">Contact Person Name:</label>
           <input
-            id="contactName"
+            id="contactPersonName"
             type="text"
-            {...register("contactPerson.name", { required: "Contact name is required" })}
+            {...register("contactPersonName", { required: "Contact name is required" })}
           />
-          {errors.contactPerson?.name && (
-            <p className="error-text">{errors.contactPerson.name.message}</p>
+          {errors.contactPersonName && (
+            <p className="error-text">{errors.contactPersonName.message}</p>
           )}
         </div>
 
+        {/* Contact Person Phone */}
         <div className="form-group">
-          <label htmlFor="contactPhone">Contact Phone:</label>
+          <label htmlFor="contactPersonPhone">Contact Person Phone:</label>
           <input
-            id="contactPhone"
+            id="contactPersonPhone"
             type="text"
-            {...register("contactPerson.phone", { required: "Contact phone is required" })}
+            {...register("contactPersonPhone", { required: "Contact phone is required" })}
           />
-          {errors.contactPerson?.phone && (
-            <p className="error-text">{errors.contactPerson.phone.message}</p>
+          {errors.contactPersonPhone && (
+            <p className="error-text">{errors.contactPersonPhone.message}</p>
           )}
         </div>
 
+        {/* Contact Person Email */}
         <div className="form-group">
-          <label htmlFor="contactEmail">Contact Email:</label>
+          <label htmlFor="contactPersonEmail">Contact Person Email:</label>
           <input
-            id="contactEmail"
+            id="contactPersonEmail"
             type="email"
-            {...register("contactPerson.email", { required: "Contact email is required" })}
+            {...register("contactPersonEmail", { required: "Contact email is required" })}
           />
-          {errors.contactPerson?.email && (
-            <p className="error-text">{errors.contactPerson.email.message}</p>
+          {errors.contactPersonEmail && (
+            <p className="error-text">{errors.contactPersonEmail.message}</p>
           )}
         </div>
 
+        {/* Status */}
         <div className="form-group">
           <label htmlFor="status">Status:</label>
           <select id="status" {...register("status", { required: "Status is required" })}>
@@ -121,6 +132,7 @@ const AddHomeForm = () => {
           {errors.status && <p className="error-text">{errors.status.message}</p>}
         </div>
 
+        {/* Availability */}
         <div className="form-group">
           <label htmlFor="availability">Availability:</label>
           <select id="availability" {...register("availability")}>
@@ -129,6 +141,7 @@ const AddHomeForm = () => {
           </select>
         </div>
 
+        {/* Home Image */}
         <div className="form-group">
           <label htmlFor="homeImage">Home Image:</label>
           <input

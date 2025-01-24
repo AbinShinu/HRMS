@@ -2,13 +2,11 @@ const mongoose = require('mongoose');
 
 const homeSchema = new mongoose.Schema({
   location: { type: String, required: true },
-  price: { type: Number, required: true },
+  price: { type: String, required: true },
   category: { type: String, required: true }, // e.g., apartment, villa, etc.
-  contactPerson: {
-    name: { type: String, required: true },
-    phone: { type: String, required: true },
-    email: { type: String, required: true },
-  },
+  contactPersonName: { type: String, required: true },  // Changed field name to top-level
+  contactPersonPhone: { type: String, required: true },  // Changed field name to top-level
+  contactPersonEmail: { type: String, required: true },  // Changed field name to top-level
   status: { 
     type: String, 
     enum: ['available', 'rented'], 
@@ -17,9 +15,8 @@ const homeSchema = new mongoose.Schema({
   }, // Home availability
   availability: { type: Boolean, default: true },
   imageUrl: { 
-    type: String, 
-    required: false, 
-    default: null 
+    type: Array, 
+    required: true
   }, // Image URL or path
   applicants: [
     {
