@@ -7,6 +7,8 @@ import Dashboard from './Admindashboard';
 import HomePage2 from './Home2';
 import AddHomeForm from './AddHome';
 import ProfileSettings from './profilesetting';
+import HomesList from './Viewhome';
+import UsersList from './Viewuser';
 
 
 
@@ -21,6 +23,8 @@ function App() {
           <Route path="/home2" element={<HomePage2/>} />
           <Route path="/addhome" element={<AddHomeForm />} />
           <Route path="/profilesettings" element={<ProfileSettings />} />
+          <Route path="/viewhome" element={<HomesList />} />
+          <Route path="/getuser" element={<UsersList />} />
           
             </Routes>
         </Router>

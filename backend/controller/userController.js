@@ -18,14 +18,13 @@ const getuser = async (req,res) => {
   
 }
 const gethome = async (req,res) => {
-  try{
-      const homes = await Home.find({})
-      res.status(200).json(homes) 
-  }
-  catch{
-      res.status(500).json({error:error});
-      }
-    
+  try {
+    const homes = await Home.find().populate('applicants.tenantId', 'name email'); // Populating tenant details
+    res.status(200).json(homes);
+  } catch (error) {
+    console.error('Error fetching homes:', error);
+    res.status(500).json({ error: 'Failed to fetch homes' });
+  } 
 }
 const fetchdata = async (req, res) => {
   try {

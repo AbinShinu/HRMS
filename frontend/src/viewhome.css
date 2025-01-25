@@ -1,0 +1,31 @@
+.homes-list {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .homes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .home-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .home-details {
+    padding: 10px;
+  }
+  
+  .home-details h3 {
+    margin: 0 0 10px;
+  }
+  
+  .home-details p {
+    margin: 5px 0;
+  }
+  

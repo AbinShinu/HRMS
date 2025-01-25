@@ -43,18 +43,23 @@ const Dashboard = () => {
         <ul>
           <li>
             <Link to="/addhome">
-              <i className="fas fa-home"></i> Manage Homes
+              <i className="fas fa-home"></i> Add Homes
             </Link>
           </li>
           <li>
-            <Link to="/manage-tenants">
-              <i className="fas fa-users"></i> Manage Tenants
+            <Link to="/getuser">
+              <i className="fas fa-users"></i> View Tenants
             </Link>
           </li>
           <li>
           <Link to="/profilesettings">
               <i className="fas fa-user-cog"></i> Profile Settings
               </Link>
+          </li>
+          <li>
+            <Link to="/viewhome">
+              <i className="fas fa-home"></i> View Homes
+            </Link>
           </li>
           <li>
             <button onClick={handleLogout}>

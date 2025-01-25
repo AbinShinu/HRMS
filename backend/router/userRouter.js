@@ -46,6 +46,7 @@ userRouter.post("/api/upload", upload.single("image1"), async (req, res) => {
       res.status(500).json({ error: "Image upload failed" });
     }
   });
+
   
 
 module.exports=userRouter
