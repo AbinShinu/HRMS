@@ -9,18 +9,16 @@ const FormComponent = () => {
   let navigate = useNavigate();
 
   const onSubmit = (data) => {
-    console.log("Form Data:", data); // Ensure this is logged when form is submitted
+    console.log("Form Data:", data);
     alert("Registration successful");
 
-    // Send data to backend via POST request
     axios.post('http://localhost:3000/users/signup', data)
       .then(response => {
-        console.log(response.data); // Log the response from the server
-        alert("Added successfully");
+        console.log(response.data);
         navigate('/login');
       })
       .catch(error => {
-        console.error("Error occurred:", error); // Log any error that occurs during the request
+        console.error("Error occurred:", error);
       });
   }
 
@@ -42,17 +40,6 @@ const FormComponent = () => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            placeholder="Enter your username"
-            {...register("username", { required: "Username is required" })}
-          />
-          {errors.username && <p className="error-text">{errors.username.message}</p>}
-        </div>
-
-        <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input
             type="email"
@@ -67,6 +54,17 @@ const FormComponent = () => {
             })}
           />
           {errors.email && <p className="error-text">{errors.email.message}</p>}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="phone">Phone:</label>
+          <input
+            type="text"
+            id="phone"
+            placeholder="Enter your phone number"
+            {...register("phone", { required: "Phone number is required" })}
+          />
+          {errors.phone && <p className="error-text">{errors.phone.message}</p>}
         </div>
 
         <div className="form-group">

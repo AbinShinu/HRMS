@@ -4,7 +4,7 @@ const fs = require("fs");
 const cloudinary = require('../cloudinary.js');  
 
 
-const {getuser,login,adduser,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,profilesettings,fetchdata,uploadimage} = require('../controller/userController.js')
+const {getuser,login,adduser,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,profilesettings,fetchdata,deletehome} = require('../controller/userController.js')
 const upload = multer({ dest: "uploads/" }); // Temporary storage for files
 
 
@@ -13,7 +13,8 @@ const userRouter = express.Router()
 userRouter.get('/',getuser)
 userRouter.post('/login',login)
 userRouter.post('/signup',adduser)
-userRouter.delete('/:id',deleteuser)
+userRouter.delete('/:userId', authenticate, deleteuser);
+userRouter.delete('/api/home/:homeId',authenticate, deletehome);
 userRouter.post('/admindashboard',godashboard)
 userRouter.put('/profilesettings/:id',authenticate,profilesettings)
 userRouter.get('/:id',getUserById)

@@ -112,112 +112,108 @@ const login = async (req, res) => {
 
 
 const adduser = async (req, res) => {
-    try {
-      // Check if the user already exists based on email or username
-      const existingUser = await User.findOne({ $or: [{ email: req.body.email }, { username: req.body.username }] });
-      if (existingUser) {
-        return res.status(400).json({ error: 'User with this email or username already exists' });
-      }
-  
-      // Hash the password
-      const hashedPassword = await bcrypt.hash(req.body.password, 10); // 10 salt rounds
-  
-      // Prepare the user object with a default role of 'tenant'
-      const userItem = {
-        username: req.body.username,
-        name: req.body.name,
-        email: req.body.email,
-        password: hashedPassword, // Save hashed password
-        role: req.body.role || 'tenant', // Default role is 'tenant'
-      };
-  
-      // Create a new user instance
-      const user = new User(userItem);
-  
-      // Save the user to the database
-      await user.save();
-  
-      // Respond with the newly created user (excluding password for security)
-      const { password, ...userData } = user.toObject(); // Exclude the password field from the response
-      res.status(201).json(userData); // Return user details without the password
-    } catch (error) {
-      console.error('Error adding user:', error);
-      res.status(500).json({ error: error.message });
+  try {
+    // Check if the user already exists based on email or phone
+    const existingUser = await User.findOne({ $or: [{ email: req.body.email }, { phone: req.body.phone }] });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this email or phone number already exists' });
     }
-  };
-  const profilesettings = async (req, res) => {
-    try {
-      const userId = req.user.userId;
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({ error: 'Invalid user ID format' });
-      }
-      const { name, username, email, password, phone } = req.body;
-      
-      // Extract userId from the token (attached by the middleware)
-      
-  
-      // Find the user by ID
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      // Update user details if provided
-      if (name) user.name = name;
-      if (username) user.username = username;
-      if (email) {
-        // Add validation for email format (optional)
-        const emailRegex = /\S+@\S+\.\S+/;
-        if (!emailRegex.test(email)) {
-          return res.status(400).json({ message: "Invalid email format" });
-        }
-        
-        user.email = email;
-      }
-  
-      // Update phone number if provided
-      if (phone) user.phone = phone;
-  
-      // If password is provided, hash it before saving
-      if (password) {
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
-      }
-  
-      // Save the updated user
-      await user.save();
-  
-      // Respond with the updated user info (excluding password)
-      res.status(200).json({
-        message: "Profile updated successfully",
-        user: {
-          name: user.name,
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          phone: user.phone,  // Including phone in response if available
-        },
-      });
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      res.status(500).json({ message: "Internal Server Error" });
-    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    // Prepare the user object
+    const userItem = {
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPassword, // Save hashed password
+      role: req.body.role || 'tenant',
+      phone: req.body.phone, // Save phone number
+    };
+
+    // Create and save the new user
+    const user = new User(userItem);
+    await user.save();
+
+    const { password, ...userData } = user.toObject(); // Exclude password
+    res.status(201).json(userData);
+  } catch (error) {
+    console.error('Error adding user:', error);
+    res.status(500).json({ error: error.message });
+  }
 };
 
-  
-  
-  
-const deleteuser = async (req,res) => {
-    try{
+const profilesettings = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID format' });
+    }
+    const { name, email, phone } = req.body;
 
-    const deleteuser = await User.findByIdAndDelete(req.params.id)
-    if(!deleteuser) return res.status(404).json({message:"user not found"})
-        res.json({message:"Sucessfully deleted"})
-}catch(error){
-    res.status(500).json({error:error})
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-}
-}
+    // Update user details if provided
+    if (name) user.name = name;
+    if (email) {
+      const emailRegex = /\S+@\S+\.\S+/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ message: "Invalid email format" });
+      }
+      user.email = email;
+    }
+
+    // Update phone number if provided
+    if (phone) user.phone = phone;
+
+    // Save the updated user
+    await user.save();
+
+    // Respond with the updated user info (excluding password and username)
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        phone: user.phone,  // Include phone in response
+      },
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+  
+  
+  
+const deleteuser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    //console.log("Received userId:", userId); // Log userId for debugging
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID format' });
+    }
+
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 const godashboard = async (req, res) => {
     try {
       // Dummy data for testing
@@ -245,6 +241,7 @@ const godashboard = async (req, res) => {
     }
   
     const token = authHeader.split(' ')[1]; // Extract the token after "Bearer"
+    
     try {
       const decoded = jwt.verify(token, 'gfgfg454$h76@'); // Use your JWT secret
       req.user = decoded; // Attach decoded data (e.g., userId) to the request
@@ -254,6 +251,7 @@ const godashboard = async (req, res) => {
       return res.status(403).json({ message: 'Invalid or expired token' });
     }
   };
+  
   
   
 
@@ -299,6 +297,29 @@ const godashboard = async (req, res) => {
     }
   };
   
+  const deletehome = async (req, res) => {
+    try {
+      const { homeId } = req.params;
+  
+      // Ensure the homeId is valid
+      if (!mongoose.Types.ObjectId.isValid(homeId)) {
+        return res.status(400).json({ error: 'Invalid home ID format' });
+      }
+  
+      // Find and delete the home
+      const home = await Home.findByIdAndDelete(homeId);
+  
+      if (!home) {
+        return res.status(404).json({ message: 'Home not found' });
+      }
+  
+      // Return success message
+      res.status(200).json({ message: 'Home deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting home:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
   
   
-module.exports={getuser,login,adduser,profilesettings,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,fetchdata}
+module.exports={getuser,login,adduser,profilesettings,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,fetchdata,deletehome}

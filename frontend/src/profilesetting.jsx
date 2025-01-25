@@ -5,15 +5,13 @@ import { useNavigate } from 'react-router-dom';
 const ProfileSettings = () => {
   const [profile, setProfile] = useState({
     name: '',
-    username: '',
     email: '',
     phone: '',
   });
   const [isEditing, setIsEditing] = useState(false);
-  const [userId, setUserId] = useState(null);  // State to store userId
-  const [token, setToken] = useState(null);    // State to store token
-  const navigate = useNavigate(); // Initialize navigate
-
+  const [userId, setUserId] = useState(null);
+  const [token, setToken] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
@@ -24,11 +22,11 @@ const ProfileSettings = () => {
     if (!token) {
       console.error('Token is missing from localStorage');
       alert('You need to log in again.');
-      navigate('/login'); // Use navigate to redirect to login
+      navigate('/login');
       return;
     }
 
-    console.log('Authorization Token:', token); // Log the token for debugging
+    console.log('Authorization Token:', token);
 
     axios
       .get(`http://localhost:3000/users/fetch/${userId}`, {
@@ -41,7 +39,7 @@ const ProfileSettings = () => {
       .catch((error) => {
         console.error('Error fetching profile:', error.response ? error.response.data : error.message);
       });
-  }, [navigate]); // Add navigate to dependency array to ensure it's up-to-date
+  }, [navigate]);
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
@@ -50,10 +48,10 @@ const ProfileSettings = () => {
   const handleSave = () => {
     axios
       .put(
-        `http://localhost:3000/users/profilesettings/${userId}`, // Dynamic URL with userId
-        { ...profile }, // The updated profile data
+        `http://localhost:3000/users/profilesettings/${userId}`,
+        { ...profile },
         {
-          headers: { Authorization: `Bearer ${token}` }, // Send the token for authorization
+          headers: { Authorization: `Bearer ${token}` },
         }
       )
       .then((response) => {
@@ -76,16 +74,6 @@ const ProfileSettings = () => {
           type="text"
           name="name"
           value={profile.name}
-          onChange={handleChange}
-          disabled={!isEditing}
-        />
-      </div>
-      <div>
-        <label>Username:</label>
-        <input
-          type="text"
-          name="username"
-          value={profile.username}
           onChange={handleChange}
           disabled={!isEditing}
         />
