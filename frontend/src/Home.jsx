@@ -4,55 +4,24 @@ import './Home.css'; // Ensure the styles are updated here
 import { Link, useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-    const [homes, setHomes] = useState([
-        // Initial mock data for four homes
-        {
-            _id: '1',
-            title: 'Cozy Apartment in the City',
-            location: 'Downtown, Mumbai',
-            rent: 25000,
-            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492968/city_apartment_xp2mbt.jpg',
-        },
-        {
-            _id: '2',
-            title: 'Luxury Villa with Pool',
-            location: 'Suburbs, Bangalore',
-            rent: 60000,
-            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492968/pool_apartment_zg832u.jpg',
-        },
-        {
-            _id: '3',
-            title: 'Modern Duplex with Garden',
-            location: 'Pune, Maharashtra',
-            rent: 45000,
-            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492968/garden_apartment_yxv2ow.jpg',
-        },
-        {
-            _id: '4',
-            title: 'Beachfront Cottage',
-            location: 'Goa, India',
-            rent: 70000,
-            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492967/beachfront_apartment_bl2iy6.jpg',
-        },
-    ]);
-    
+    const [homes, setHomes] = useState([]); // Initialize with an empty array
     const [isLoggedIn, setIsLoggedIn] = useState(false); // Add authentication state
     const navigate = useNavigate();
 
     // Fetch data from the backend when the component mounts
     useEffect(() => {
-        axios
-            .get('http://localhost:3000/homes')
-            .then((response) => {
-                // Append fetched data to initial mock data
-                setHomes((prevHomes) => [...prevHomes, ...response.data]);
-            })
-            .catch((error) => {
+        const fetchHomes = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/users/api/home');
+                setHomes(response.data); // Update state with fetched data
+            } catch (error) {
                 console.error('Error fetching homes:', error);
-            });
+            }
+        };
+
+        fetchHomes();
 
         // Check if user is logged in (this can be based on a token or session)
-        // Example: Check localStorage for a login token
         const token = localStorage.getItem('authToken');
         if (token) {
             setIsLoggedIn(true);
@@ -82,14 +51,14 @@ const HomePage = () => {
                     homes.map((home) => (
                         <div key={home._id} className="home-card">
                             <img
-                                src={home.image}
+                                src={home.imageUrl} // Use the image URL from the database
                                 alt={home.title}
                                 className="home-image"
                             />
                             <div className="home-details">
                                 <h2>{home.title}</h2>
                                 <p>{home.location}</p>
-                                <p>₹{home.rent}/month</p>
+                                <p>₹{home.price}/month</p>
                                 <button
                                     onClick={() => handleViewDetails(home._id)}
                                     className="view-details"

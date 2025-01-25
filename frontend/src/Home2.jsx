@@ -4,49 +4,36 @@ import './Home2.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 const HomePage2 = () => {
-    const [homes, setHomes] = useState([
-        {
-            _id: '1',
-            title: 'Cozy Apartment in the City',
-            location: 'Downtown, Mumbai',
-            rent: 25000,
-            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492968/city_apartment_xp2mbt.jpg',
-        },
-        {
-            _id: '2',
-            title: 'Luxury Villa with Pool',
-            location: 'Suburbs, Bangalore',
-            rent: 60000,
-            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492968/pool_apartment_zg832u.jpg',
-        },
-        {
-            _id: '3',
-            title: 'Modern Duplex with Garden',
-            location: 'Pune, Maharashtra',
-            rent: 45000,
-            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492968/garden_apartment_yxv2ow.jpg',
-        },
-        {
-            _id: '4',
-            title: 'Beachfront Cottage',
-            location: 'Goa, India',
-            rent: 70000,
-            image: 'https://res.cloudinary.com/dw72cnkab/image/upload/v1736492967/beachfront_apartment_bl2iy6.jpg',
-        },
-    ]);
+    const [homes, setHomes] = useState([]); // Initialize as an empty array
+    const [selectedHome, setSelectedHome] = useState(null); // State for selected home
+    const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
 
     const navigate = useNavigate();
 
+    // Fetch homes from the database
     useEffect(() => {
-        axios
-            .get('http://localhost:3000/homes')
-            .then((response) => {
-                setHomes((prevHomes) => [...prevHomes, ...response.data]);
-            })
-            .catch((error) => {
+        const fetchHomes = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/users/api/home');
+                setHomes(response.data); // Update state with fetched data
+            } catch (error) {
                 console.error('Error fetching homes:', error);
-            });
+            }
+        };
+
+        fetchHomes();
     }, []);
+
+    const handleViewDetails = (homeId) => {
+        const home = homes.find((home) => home._id === homeId);
+        setSelectedHome(home);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedHome(null);
+    };
 
     const handleLogout = () => {
         navigate("/login");
@@ -86,7 +73,7 @@ const HomePage2 = () => {
                 <header className="homepage-header">
                     <h1>Find Your Dream Home Today!</h1>
                 </header>
-                
+
                 <div className="search-bar-container">
                     <input
                         type="text"
@@ -100,20 +87,20 @@ const HomePage2 = () => {
                         homes.map((home) => (
                             <div key={home._id} className="home-card">
                                 <img
-                                    src={home.image}
+                                    src={home.imageUrl} // Use dynamic image URL from the database
                                     alt={home.title}
                                     className="home-image"
                                 />
                                 <div className="home-details">
                                     <h2>{home.title}</h2>
                                     <p>{home.location}</p>
-                                    <p>₹{home.rent}/month</p>
-                                    <Link
-                                        to={`/homes/${home._id}`}
+                                    <p>₹{home.price}/month</p>
+                                    <button
+                                        onClick={() => handleViewDetails(home._id)}
                                         className="view-details"
                                     >
                                         View Details
-                                    </Link>
+                                    </button>
                                 </div>
                             </div>
                         ))
@@ -123,6 +110,30 @@ const HomePage2 = () => {
                 </main>
             </div>
         </div>
+
+        {/* Modal to display home details */}
+        {isModalOpen && selectedHome && (
+            <div className="modal-overlay">
+                <div className="modal-content">
+                    <h2>Home Details</h2>
+                    <p><strong>ID:</strong> {selectedHome._id}</p>
+                    <p><strong>Location:</strong> {selectedHome.location}</p>
+                    <p><strong>Price:</strong> ₹{selectedHome.price}</p>
+                    <p><strong>Category:</strong> {selectedHome.category}</p>
+                    <p><strong>Status:</strong> {selectedHome.status}</p>
+                    <p><strong>Contact Person:</strong> {selectedHome.contactPersonName}</p>
+                    <p><strong>Contact Email:</strong> {selectedHome.contactPersonEmail}</p>
+                    <p><strong>Contact Phone:</strong> {selectedHome.contactPersonPhone}</p>
+                    <p><strong>Applicants:</strong> {selectedHome.applicants?.length || 0}</p>
+                    <button 
+                        onClick={handleCloseModal} 
+                        className="close-btn"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        )}
 
         <footer className="homepage-footer">
             <p>Contact Us: +91 1234567890 | email@example.com</p>

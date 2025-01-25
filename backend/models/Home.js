@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 const homeSchema = new mongoose.Schema({
   location: { type: String, required: true },
   price: { type: String, required: true },
-  category: { type: String, required: true }, // e.g., apartment, villa, etc.
+  category: { 
+    type: String, 
+    enum: ['villa', 'apartment', 'studio apartment', 'bungalow', 'others'], 
+    required: true 
+  }, // e.g., apartment, villa, etc.
   contactPersonName: { type: String, required: true },  // Changed field name to top-level
   contactPersonPhone: { type: String, required: true },  // Changed field name to top-level
   contactPersonEmail: { type: String, required: true },  // Changed field name to top-level
@@ -13,7 +17,6 @@ const homeSchema = new mongoose.Schema({
     default: 'available', 
     required: true 
   }, // Home availability
-  availability: { type: Boolean, default: true },
   imageUrl: { 
     type: Array, 
     required: true

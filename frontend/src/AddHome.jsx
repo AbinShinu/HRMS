@@ -11,9 +11,9 @@ const AddHomeForm = () => {
 
   const onSubmit = async (data) => {
     console.log("Form Data:", data);
-  
+
     const formData = new FormData();
-  
+
     // Prepare the form fields
     formData.append("location", data.location);
     formData.append("price", data.price);
@@ -22,17 +22,16 @@ const AddHomeForm = () => {
     formData.append("contactPersonPhone", data.contactPersonPhone);
     formData.append("contactPersonEmail", data.contactPersonEmail);
     formData.append("status", data.status);
-    formData.append("availability", data.availability === "true");
-  
+
     try {
       // Check if a file is selected
       if (data.homeImage && data.homeImage[0]) {
         const imageFile = data.homeImage[0];
-  
+
         // Upload the image to the backend
         const uploadFormData = new FormData();
         uploadFormData.append("image1", imageFile);
-  
+
         const uploadResponse = await axios.post(
           "http://localhost:3000/users/api/upload", // Adjust the endpoint as needed
           uploadFormData,
@@ -40,24 +39,24 @@ const AddHomeForm = () => {
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-  
+
         const imageUrl = uploadResponse.data.imageUrl;
-        console.log("Uploaded Image URL:", imageUrl);
-  
+        //console.log("Uploaded Image URL:", imageUrl);
+
         // Append the uploaded image URL to the main formData
         formData.append("homeImageUrl", imageUrl);
       } else {
         console.error("No image selected");
         return;
       }
-  
+
       // Submit the form data to your backend
       const response = await axios.post("http://localhost:3000/users/api/addhome", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-  
+
       alert("Home added successfully!");
       console.log("Server Response:", response.data);
     } catch (error) {
@@ -65,7 +64,6 @@ const AddHomeForm = () => {
       alert("Failed to add home. Please try again.");
     }
   };
-  
 
   return (
     <div className="form-container">
@@ -97,11 +95,17 @@ const AddHomeForm = () => {
         {/* Category */}
         <div className="form-group">
           <label htmlFor="category">Category:</label>
-          <input
+          <select
             id="category"
-            type="text"
             {...register("category", { required: "Category is required" })}
-          />
+          >
+            <option value="">Select a category</option>
+            <option value="villa">Villa</option>
+            <option value="apartment">Apartment</option>
+            <option value="studio apartment">Studio Apartment</option>
+            <option value="bungalow">Bungalow</option>
+            <option value="others">Others</option>
+          </select>
           {errors.category && <p className="error-text">{errors.category.message}</p>}
         </div>
 
@@ -152,15 +156,6 @@ const AddHomeForm = () => {
             <option value="rented">Rented</option>
           </select>
           {errors.status && <p className="error-text">{errors.status.message}</p>}
-        </div>
-
-        {/* Availability */}
-        <div className="form-group">
-          <label htmlFor="availability">Availability:</label>
-          <select id="availability" {...register("availability")}>
-            <option value="true">Available</option>
-            <option value="false">Not Available</option>
-          </select>
         </div>
 
         {/* Home Image */}

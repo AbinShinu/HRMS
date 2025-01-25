@@ -279,7 +279,7 @@ const godashboard = async (req, res) => {
         contactPersonPhone: req.body.contactPersonPhone,
         contactPersonEmail: req.body.contactPersonEmail,
         status: req.body.status || "available", // Default status is 'available'
-        availability: req.body.availability !== undefined ? req.body.availability : true,
+        
       };
       //console.log("Request Body:", req.body);
   
