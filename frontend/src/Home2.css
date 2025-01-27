@@ -101,43 +101,82 @@ nav ul li {
     color: white;
 }
 
-.home-list {
+/* Main container for the list of homes */
+.homes-list {
     padding: 20px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+/* Grid layout for homes */
+.homes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between grid items */
+    width: 100%; /* Full width of the parent container */
+    max-width: 1200px; /* Limit the maximum width */
+}
+
+/* Styling for each home card */
 .home-card {
-    background-color: #2a2a2a;
+    background-color: #2a2a2a; /* Slightly lighter gray for cards */
     color: white;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s;
-    width: 300px;
-    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
+/* Hover effect for home cards */
 .home-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.05); /* Slight zoom effect */
 }
 
+/* Image styling */
 .home-image {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
+    height: 180px; /* Fixed height for images */
+    object-fit: cover; /* Ensure the image fits the card */
+    border-bottom: 2px solid #444; /* Separate the image from details */
 }
 
+/* Details inside each home card */
 .home-details {
     padding: 15px;
     text-align: center;
 }
 
-.home-details h2 {
-    margin: 0 0 10px 0;
+/* Heading and text styling */
+.home-details h3 {
     font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.home-details p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #ccc;
+}
+
+/* Button styling for 'View Details' */
+.view-more-btn {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.view-more-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
 }
 
 .view-details {
@@ -157,7 +196,8 @@ nav ul li {
     background-color: #0044cc;
     color: white;
     font-size: 0.9rem;
-    margin-top: auto;
+    margin-top: 100px;
+    
 }
 
 /* Responsive Styles */

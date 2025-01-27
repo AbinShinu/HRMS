@@ -29,11 +29,9 @@ const HomePage = () => {
     }, []);
 
     const handleViewDetails = (homeId) => {
-        if (isLoggedIn) {
-            navigate(`/homes/${homeId}`);
-        } else {
+         
             navigate('/login'); // Redirect to login if not logged in
-        }
+       
     };
 
     return (

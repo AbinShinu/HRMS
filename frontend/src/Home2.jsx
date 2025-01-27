@@ -82,65 +82,115 @@ const HomePage2 = () => {
                     />
                 </div>
 
-                <main className="home-list">
-                    {homes.length > 0 ? (
-                        homes.map((home) => (
-                            <div key={home._id} className="home-card">
-                                <img
-                                    src={home.imageUrl} // Use dynamic image URL from the database
-                                    alt={home.title}
-                                    className="home-image"
-                                />
-                                <div className="home-details">
-                                    <h2>{home.title}</h2>
-                                    <p>{home.location}</p>
-                                    <p>₹{home.price}/month</p>
-                                    <button
-                                        onClick={() => handleViewDetails(home._id)}
-                                        className="view-details"
-                                    >
-                                        View Details
-                                    </button>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No homes available at the moment.</p>
-                    )}
-                </main>
-            </div>
-        </div>
-
-        {/* Modal to display home details */}
-        {isModalOpen && selectedHome && (
-            <div className="modal-overlay">
-                <div className="modal-content">
-                    <h2>Home Details</h2>
-                    <p><strong>ID:</strong> {selectedHome._id}</p>
-                    <p><strong>Location:</strong> {selectedHome.location}</p>
-                    <p><strong>Price:</strong> ₹{selectedHome.price}</p>
-                    <p><strong>Category:</strong> {selectedHome.category}</p>
-                    <p><strong>Status:</strong> {selectedHome.status}</p>
-                    <p><strong>Contact Person:</strong> {selectedHome.contactPersonName}</p>
-                    <p><strong>Contact Email:</strong> {selectedHome.contactPersonEmail}</p>
-                    <p><strong>Contact Phone:</strong> {selectedHome.contactPersonPhone}</p>
-                    <p><strong>Applicants:</strong> {selectedHome.applicants?.length || 0}</p>
-                    <button 
-                        onClick={handleCloseModal} 
-                        className="close-btn"
-                    >
-                        Close
-                    </button>
+                <main className="homes-list">
+    <h1>Available Homes</h1>
+    {homes.length > 0 ? (
+        <div className="homes-grid">
+            {homes.map((home) => (
+                <div key={home._id} className="home-card">
+                    <img 
+                        src={home.imageUrl[0]} 
+                        alt={home.category} 
+                        className="home-image"
+                    />
+                    <div className="home-details">
+                        <h3>{home.location}</h3>
+                        <p>Price: ₹{home.price}</p>
+                        <p>Category: {home.category}</p>
+                        <button
+                            onClick={() => handleViewDetails(home._id)}
+                            className="view-more-btn"
+                        >
+                            View Details
+                        </button>
+                    </div>
                 </div>
-            </div>
-        )}
+            ))}
+        </div>
+    ) : (
+        <p>No homes available at the moment.</p>
+    )}
+</main>
 
+            </div>
+
+            {/* Modal to display home details */}
+            {isModalOpen && selectedHome && (
+                <div style={styles.modalOverlay}>
+                    <div style={styles.modalContent}>
+                        <h2>Home Details</h2>
+                        <p><strong>ID:</strong> {selectedHome._id}</p>
+                        <p><strong>Location:</strong> {selectedHome.location}</p>
+                        <p><strong>Price:</strong> ₹{selectedHome.price}</p>
+                        <p><strong>Category:</strong> {selectedHome.category}</p>
+                        <p><strong>Status:</strong> {selectedHome.status}</p>
+                        <p><strong>Contact Person:</strong> {selectedHome.contactPersonName}</p>
+                        <p><strong>Contact Email:</strong> {selectedHome.contactPersonEmail}</p>
+                        <p><strong>Contact Phone:</strong> {selectedHome.contactPersonPhone}</p>
+                        <p><strong>Applicants:</strong> {selectedHome.applicants?.length || 0}</p>
+                        <button 
+                            onClick={handleCloseModal} 
+                            style={styles.closeButton}
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            
+        </div>
         <footer className="homepage-footer">
-            <p>Contact Us: +91 1234567890 | email@example.com</p>
-            <p>© 2025 HRMS. All Rights Reserved.</p>
-        </footer>
+                <p>Contact Us: +91 1234567890 | email@example.com</p>
+                <p>© 2025 HRMS. All Rights Reserved.</p>
+            </footer>
         </>
+        
     );
+};
+
+const styles = {
+    viewMoreButton: {
+        padding: "10px 15px",
+        marginTop: "10px",
+        cursor: "pointer",
+        backgroundColor: "#007bff", // Blue color for "View More" button
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        fontSize: "14px",
+    },
+    modalOverlay: {
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 1000,
+    },
+    modalContent: {
+        backgroundColor: "black",
+        padding: "20px",
+        borderRadius: "8px",
+        maxWidth: "500px",
+        width: "100%",
+        textAlign: "left",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.3)",
+    },
+    closeButton: {
+        padding: "10px 15px",
+        marginTop: "10px",
+        cursor: "pointer",
+        backgroundColor: "#28a745", // Green color for "Close" button
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+        fontSize: "14px",
+    },
 };
 
 export default HomePage2;
