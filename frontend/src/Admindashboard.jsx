@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // Import Link for navigation
+import { useNavigate, Link } from "react-router-dom";
 import "./Dashboard.css";
-
 
 const Dashboard = () => {
   const [totalHomes, setTotalHomes] = useState(0);
@@ -9,31 +8,29 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch total homes
-    fetch("/api/homes/count")
-      .then((res) => res.json())
-      .then((data) => setTotalHomes(data.totalHomes || 0)) // Default to 0 if data is undefined
-      .catch((err) => {
-        console.error(err);
-        //alert("Failed to fetch total homes. Please try again later.");
-      });
+    // Fetch total homes count
+    fetch('http://localhost:3000/users/api/home/count')
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch total homes count");
+        return res.json();
+      })
+      .then((data) => setTotalHomes(data.totalHomes || 0)) // Handle missing data gracefully
+      .catch((err) => console.error("Error fetching total homes:", err));
 
-    // Fetch total requests
-    fetch("/api/requests/count")
-      .then((res) => res.json())
-      .then((data) => setTotalRequests(data.totalRequests || 0)) // Default to 0 if data is undefined
-      .catch((err) => {
-        console.error(err);
-        //alert("Failed to fetch new requests. Please try again later.");
-      });
+    // Fetch total requests count
+    fetch('/api/application/count')
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch total requests count");
+        return res.json();
+      })
+      .then((data) => setTotalRequests(data.totalRequests || 0)) // Handle missing data gracefully
+      .catch((err) => console.error("Error fetching total requests:", err));
   }, []);
 
-  
   const handleLogout = () => {
     localStorage.clear();
     navigate("/login");
   };
-  
 
   return (
     <div className="dashboard">
@@ -52,9 +49,9 @@ const Dashboard = () => {
             </Link>
           </li>
           <li>
-          <Link to="/profilesettings">
+            <Link to="/profilesettings">
               <i className="fas fa-user-cog"></i> Profile Settings
-              </Link>
+            </Link>
           </li>
           <li>
             <Link to="/viewhome">
@@ -71,12 +68,9 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Header */}
         <div className="header">
           <h1>Welcome, Admin</h1>
         </div>
-
-        {/* Widgets Section */}
         <div className="widgets">
           <div className="widget">
             <h3>Total Homes</h3>

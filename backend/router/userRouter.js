@@ -4,7 +4,7 @@ const fs = require("fs");
 const cloudinary = require('../cloudinary.js');  
 
 
-const {getuser,login,adduser,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,profilesettings,fetchdata,deletehome} = require('../controller/userController.js')
+const {getuser,login,adduser,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,profilesettings,fetchdata,deletehome,counthome,addApplication} = require('../controller/userController.js')
 const upload = multer({ dest: "uploads/" }); // Temporary storage for files
 
 
@@ -47,6 +47,8 @@ userRouter.post("/api/upload", upload.single("image1"), async (req, res) => {
       res.status(500).json({ error: "Image upload failed" });
     }
   });
+userRouter.get('/api/home/count', counthome);
+userRouter.post('/api/application/:id',authenticate, addApplication);
 
   
 

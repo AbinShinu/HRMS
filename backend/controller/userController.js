@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Home = require('../models/Home.js');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
+const Application = require('../models/Application.js');
 
 const getuser = async (req,res) => {
 
@@ -320,6 +321,35 @@ const godashboard = async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   };
+
+  const counthome = async (req, res) => {
+    try {
+      const totalHomes = await Home.countDocuments(); // Ensure Home model is imported
+      res.status(200).json({ totalHomes });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch total homes count" });
+    }
+  };
   
+  const addApplication = async (req, res) => {
+    const { applicantName, applicantId, homeId } = req.body;
+    try {
+      // Create new application
+      const newApplication = new Application({
+        applicationId: generateUniqueId(), // Generate or assign a unique ID
+        applicantName,
+        applicantId,
+        homeId,
+        status: 'pending',
+      });
   
-module.exports={getuser,login,adduser,profilesettings,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,fetchdata,deletehome}
+      // Save the application to the database
+      await newApplication.save();
+      res.status(200).json({ message: 'Application submitted successfully', application: newApplication });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error saving application', error: error.message });
+    }
+  };
+  
+module.exports={getuser,login,adduser,profilesettings,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication}

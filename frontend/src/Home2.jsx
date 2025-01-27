@@ -38,6 +38,48 @@ const HomePage2 = () => {
     const handleLogout = () => {
         navigate("/login");
     };
+    const handleBookNow = async (homeId) => {
+        try {
+          const applicantId = localStorage.getItem('userId'); // Assuming user is logged in
+          const applicantName = localStorage.getItem('userName'); // Assuming user details are saved
+          const token = localStorage.getItem('authToken'); // Assuming the token is saved in localStorage
+      
+          if (!applicantId ) {
+            alert('Missing user details');
+            return;
+          }
+          if(!token){
+            alert('Missing token');
+            return;
+          }
+          if(!applicantName){
+            alert('Missing user name');
+            return;
+          }
+      
+          const applicationData = {
+            applicantName,
+            applicantId,
+            homeId
+          };
+      
+          // Make a POST request to submit the application with the userId in the URL and token in headers
+          const response = await axios.post(
+            `http://localhost:3000/users/api/application/${applicantId}`, // Passing the applicantId in the URL
+            applicationData, 
+            {
+              headers: { Authorization: `Bearer ${token}` } // Including the token in headers for authorization
+            }
+          );
+      
+          console.log('Application submitted:', response.data);
+          alert('Application submitted successfully!');
+        } catch (error) {
+          console.error('Error submitting application:', error);
+          alert('There was an error submitting your application.');
+        }
+      };
+      
 
     return (
         <>
@@ -97,12 +139,20 @@ const HomePage2 = () => {
                         <h3>{home.location}</h3>
                         <p>Price: ₹{home.price}</p>
                         <p>Category: {home.category}</p>
-                        <button
-                            onClick={() => handleViewDetails(home._id)}
-                            className="view-more-btn"
-                        >
-                            View Details
-                        </button>
+                        <div className="home-buttons">
+                            <button
+                                onClick={() => handleViewDetails(home._id)}
+                                className="view-more-btn"
+                            >
+                                View Details
+                            </button>
+                            <button
+                                onClick={() => handleBookNow(home._id)}
+                                className="book-now-btn"
+                            >
+                                Book Now
+                            </button>
+                        </div>
                     </div>
                 </div>
             ))}
@@ -112,6 +162,7 @@ const HomePage2 = () => {
     )}
 </main>
 
+
             </div>
 
             {/* Modal to display home details */}
@@ -119,7 +170,7 @@ const HomePage2 = () => {
                 <div style={styles.modalOverlay}>
                     <div style={styles.modalContent}>
                         <h2>Home Details</h2>
-                        <p><strong>ID:</strong> {selectedHome._id}</p>
+                       
                         <p><strong>Location:</strong> {selectedHome.location}</p>
                         <p><strong>Price:</strong> ₹{selectedHome.price}</p>
                         <p><strong>Category:</strong> {selectedHome.category}</p>
@@ -127,7 +178,7 @@ const HomePage2 = () => {
                         <p><strong>Contact Person:</strong> {selectedHome.contactPersonName}</p>
                         <p><strong>Contact Email:</strong> {selectedHome.contactPersonEmail}</p>
                         <p><strong>Contact Phone:</strong> {selectedHome.contactPersonPhone}</p>
-                        <p><strong>Applicants:</strong> {selectedHome.applicants?.length || 0}</p>
+                        
                         <button 
                             onClick={handleCloseModal} 
                             style={styles.closeButton}
