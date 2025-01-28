@@ -9,6 +9,7 @@ import AddHomeForm from './AddHome';
 import ProfileSettings from './profilesetting';
 import HomesList from './Viewhome';
 import UsersList from './Viewuser';
+import Applications from './viewApplication';
 
 
 
@@ -25,6 +26,7 @@ function App() {
           <Route path="/profilesettings" element={<ProfileSettings />} />
           <Route path="/viewhome" element={<HomesList />} />
           <Route path="/getuser" element={<UsersList />} />
+          <Route path="/getApplication" element={<Applications />} />
           
             </Routes>
         </Router>

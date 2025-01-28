@@ -6,7 +6,6 @@ const Dashboard = () => {
   const [totalHomes, setTotalHomes] = useState(0);
   const [totalRequests, setTotalRequests] = useState(0);
   const navigate = useNavigate();
-
   useEffect(() => {
     // Fetch total homes count
     fetch('http://localhost:3000/users/api/home/count')
@@ -14,18 +13,25 @@ const Dashboard = () => {
         if (!res.ok) throw new Error("Failed to fetch total homes count");
         return res.json();
       })
-      .then((data) => setTotalHomes(data.totalHomes || 0)) // Handle missing data gracefully
+      .then((data) => {
+        //console.log("Total Homes Data:", data); // Debugging output
+        setTotalHomes(data.totalHomes || 0); // Use the correct key
+      })
       .catch((err) => console.error("Error fetching total homes:", err));
-
+  
     // Fetch total requests count
-    fetch('/api/application/count')
+    fetch('http://localhost:3000/users/api/application/count')
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch total requests count");
         return res.json();
       })
-      .then((data) => setTotalRequests(data.totalRequests || 0)) // Handle missing data gracefully
+      .then((data) => {
+        //console.log("Total Requests Data:", data); // Debugging output
+        setTotalRequests(data.totalApplications || 0); // Match backend response key
+      })
       .catch((err) => console.error("Error fetching total requests:", err));
   }, []);
+  
 
   const handleLogout = () => {
     localStorage.clear();
@@ -56,6 +62,11 @@ const Dashboard = () => {
           <li>
             <Link to="/viewhome">
               <i className="fas fa-home"></i> View Homes
+            </Link>
+          </li>
+          <li>
+            <Link to="/getApplication">
+              <i className="fas fa-file-alt"></i> View Applications
             </Link>
           </li>
           <li>

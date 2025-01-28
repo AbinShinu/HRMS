@@ -41,34 +41,44 @@ const HomePage2 = () => {
     const handleBookNow = async (homeId) => {
         try {
           const applicantId = localStorage.getItem('userId'); // Assuming user is logged in
-          const applicantName = localStorage.getItem('userName'); // Assuming user details are saved
           const token = localStorage.getItem('authToken'); // Assuming the token is saved in localStorage
       
-          if (!applicantId ) {
+          if (!applicantId) {
             alert('Missing user details');
             return;
           }
-          if(!token){
+          if (!token) {
             alert('Missing token');
             return;
           }
-          if(!applicantName){
-            alert('Missing user name');
+      
+          // Fetch the user details (including applicantName) from the backend
+          const userResponse = await axios.get(
+            `http://localhost:3000/users/${applicantId}`, // Endpoint to fetch user details
+            {
+              headers: { Authorization: `Bearer ${token}` }, // Pass the token for authentication
+            }
+          );
+      
+          const { name: applicantName } = userResponse.data; // Assuming the response includes a "name" field
+          console.log('Applicant Name:', applicantName);
+          if (!applicantName) {
+            alert('Unable to fetch applicant name from the database.');
             return;
           }
       
           const applicationData = {
             applicantName,
             applicantId,
-            homeId
+            homeId,
           };
       
-          // Make a POST request to submit the application with the userId in the URL and token in headers
+          // Submit the application
           const response = await axios.post(
             `http://localhost:3000/users/api/application/${applicantId}`, // Passing the applicantId in the URL
-            applicationData, 
+            applicationData,
             {
-              headers: { Authorization: `Bearer ${token}` } // Including the token in headers for authorization
+              headers: { Authorization: `Bearer ${token}` }, // Including the token in headers for authorization
             }
           );
       
@@ -79,6 +89,7 @@ const HomePage2 = () => {
           alert('There was an error submitting your application.');
         }
       };
+      
       
 
     return (

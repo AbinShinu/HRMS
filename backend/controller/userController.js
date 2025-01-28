@@ -5,6 +5,10 @@ const Home = require('../models/Home.js');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
 const Application = require('../models/Application.js');
+const crypto = require('crypto');
+
+const generateUniqueId = () => crypto.randomUUID(); // Available in Node.js v14.17.0+
+
 
 const getuser = async (req,res) => {
 
@@ -215,22 +219,6 @@ const deleteuser = async (req, res) => {
   }
 };
 
-const godashboard = async (req, res) => {
-    try {
-      // Dummy data for testing
-      const totalRequests = 10; // Replace with actual database query later
-      const newRequests = 3; // Replace with actual database query later
-  
-      // Respond with dummy data
-      res.status(200).json({
-        totalRequests,
-        newRequests,
-      });
-    } catch (error) {
-      // Handle errors
-      res.status(500).json({ error: error.message });
-    }
-  };
 
   const jwt = require('jsonwebtoken');
 
@@ -351,5 +339,65 @@ const godashboard = async (req, res) => {
       res.status(500).json({ message: 'Error saving application', error: error.message });
     }
   };
+
+  const countapplication = async (req, res) => {
+    try {
+      const totalApplications = await Application.countDocuments();
+      res.status(200).json({ totalApplications });
+    } catch (error) {
+      console.error('Error fetching total applications:', error);
+      res.status(500).json({ error: 'Failed to fetch total applications count' });
+    }
+  };
+
+  const getApplications = async (req, res) => {
+    try {
+      const applications = await Application.find().populate('applicantId').populate('homeId');
+      res.status(200).json(applications);
+    } catch (error) {
+      console.error('Error fetching applications:', error);
+      res.status(500).json({ error: 'Failed to fetch applications' });
+    }
+  };
+
+  const approveApplication = async (req, res) => {  
+    const { id } = req.params;
+    try {
+      const updatedApplication = await Application.findByIdAndUpdate(
+        id,
+        { status: "approved" },
+        { new: true }
+      );
+      if (!updatedApplication) return res.status(404).json({ error: "Application not found" });
   
-module.exports={getuser,login,adduser,profilesettings,deleteuser,godashboard,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication}
+      res.status(200).json({ message: "Application approved", application: updatedApplication });
+    } catch (error) {
+      console.error("Error approving application:", error);
+      res.status(500).json({ error: "Failed to approve application" });
+    }
+  };
+
+  const deleteApplication = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      // Update the application's status to 'rejected'
+      const updatedApplication = await Application.findByIdAndUpdate(
+        id,
+        { status: "rejected" }, // Set status to 'rejected'
+        { new: true } // Return the updated document
+      );
+  
+      if (!updatedApplication) {
+        return res.status(404).json({ error: "Application not found" });
+      }
+  
+      res.status(200).json({ message: "Application status updated to rejected", application: updatedApplication });
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      res.status(500).json({ error: "Failed to update application status" });
+    }
+  };
+  
+  
+module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getApplications,approveApplication,deleteApplication}
