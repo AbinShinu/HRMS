@@ -40,56 +40,49 @@ const HomePage2 = () => {
     };
     const handleBookNow = async (homeId) => {
         try {
-          const applicantId = localStorage.getItem('userId'); // Assuming user is logged in
-          const token = localStorage.getItem('authToken'); // Assuming the token is saved in localStorage
-      
-          if (!applicantId) {
-            alert('Missing user details');
-            return;
-          }
-          if (!token) {
-            alert('Missing token');
-            return;
-          }
-      
-          // Fetch the user details (including applicantName) from the backend
-          const userResponse = await axios.get(
-            `http://localhost:3000/users/${applicantId}`, // Endpoint to fetch user details
-            {
-              headers: { Authorization: `Bearer ${token}` }, // Pass the token for authentication
+            const applicantId = localStorage.getItem('userId'); // Assuming user is logged in
+            const token = localStorage.getItem('authToken'); // Assuming the token is saved in localStorage
+            
+            if (!applicantId) {
+                alert('Missing user details');
+                return;
             }
-          );
-      
-          const { name: applicantName } = userResponse.data; // Assuming the response includes a "name" field
-          console.log('Applicant Name:', applicantName);
-          if (!applicantName) {
-            alert('Unable to fetch applicant name from the database.');
-            return;
-          }
-      
-          const applicationData = {
-            applicantName,
-            applicantId,
-            homeId,
-          };
-      
-          // Submit the application
-          const response = await axios.post(
-            `http://localhost:3000/users/api/application/${applicantId}`, // Passing the applicantId in the URL
-            applicationData,
-            {
-              headers: { Authorization: `Bearer ${token}` }, // Including the token in headers for authorization
+            if (!token) {
+                alert('Missing token');
+                return;
             }
-          );
-      
-          console.log('Application submitted:', response.data);
-          alert('Application submitted successfully!');
+    
+            const applicationData = {
+                applicantName: "Applicant Name", // Add applicant name if necessary or retrieve it
+                applicantId,
+                homeId,
+            };
+    
+            // Send the application request to the backend
+            const response = await axios.post(`http://localhost:3000/users/api/application/${homeId}`, applicationData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+    
+            if (response.data.message === 'This home is already rented. You cannot apply.') {
+                alert(response.data.message);  // Display rented home message
+            } else {
+                alert("Application submitted successfully!");
+                // Additional success logic if needed
+            }
         } catch (error) {
-          console.error('Error submitting application:', error);
-          alert('There was an error submitting your application.');
+            console.error('Error submitting application:', error);
+            // Show the error message from the backend
+            if (error.response && error.response.data && error.response.data.message) {
+                alert(error.response.data.message); // Show the error message from the backend
+            } else {
+                alert("There was an error submitting your application.");
+            }
         }
-      };
-      
+    };
+    
+    
       
 
     return (
@@ -104,11 +97,9 @@ const HomePage2 = () => {
                             <Link to="/profilesettings" className="sidebar-link">Profile Settings</Link>
                         </li>
                         <li>
-                            <Link to="/applications" className="sidebar-link">Track Applications</Link>
+                            <Link to="/trackapplication" className="sidebar-link">Track Applications</Link>
                         </li>
-                        <li>
-                            <Link to="/homes" className="sidebar-link">Home Listings</Link>
-                        </li>
+                        
                         <li>
                             <button 
                                 onClick={handleLogout} 
@@ -127,13 +118,7 @@ const HomePage2 = () => {
                     <h1>Find Your Dream Home Today!</h1>
                 </header>
 
-                <div className="search-bar-container">
-                    <input
-                        type="text"
-                        placeholder="Search for homes..."
-                        className="search-bar"
-                    />
-                </div>
+                
 
                 <main className="homes-list">
     <h1>Available Homes</h1>

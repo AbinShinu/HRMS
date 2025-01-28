@@ -42,7 +42,7 @@ const Applications = () => {
   const handleRemove = async (applicationId) => {
     try {
       const response = await fetch(`http://localhost:3000/users/api/application/${applicationId}`, {
-        method: "PATCH", // Assuming a PATCH request to change status to "rejected"
+        method: "DELETE", // Assuming a PATCH request to change status to "rejected"
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "rejected" }),
       });
@@ -114,7 +114,7 @@ const Applications = () => {
                       borderRadius: "4px",
                     }}
                   >
-                    Remove
+                    Reject
                   </button>
                 </td>
               </tr>

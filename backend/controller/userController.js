@@ -312,42 +312,69 @@ const deleteuser = async (req, res) => {
 
   const counthome = async (req, res) => {
     try {
-      const totalHomes = await Home.countDocuments(); // Ensure Home model is imported
-      res.status(200).json({ totalHomes });
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch total homes count" });
-    }
+      const totalHomes = await Home.countDocuments();
+      const availableHomes = await Home.countDocuments({ status: 'available' });
+      const rentedHomes = await Home.countDocuments({ status: 'rented' });
+
+      res.status(200).json({
+          totalHomes,
+          availableHomes,
+          rentedHomes,
+      });
+  } catch (error) {
+      console.error('Error fetching home counts:', error);
+      res.status(500).json({ error: 'Failed to fetch home counts' });
+  }
   };
   
   const addApplication = async (req, res) => {
     const { applicantName, applicantId, homeId } = req.body;
     try {
-      // Create new application
-      const newApplication = new Application({
-        applicationId: generateUniqueId(), // Generate or assign a unique ID
-        applicantName,
-        applicantId,
-        homeId,
-        status: 'pending',
-      });
-  
-      // Save the application to the database
-      await newApplication.save();
-      res.status(200).json({ message: 'Application submitted successfully', application: newApplication });
+        // Fetch the home by its ID to check its status
+        const home = await Home.findById(homeId);
+        
+        // If home is not found, return an error
+        if (!home) {
+            return res.status(404).json({ message: 'Home not found' });
+        }
+        
+        // Check if the home is rented
+        if (home.status === 'rented') {
+            return res.status(400).json({ message: 'This home is already rented. You cannot apply.' });
+        }
+
+        // Create new application
+        const newApplication = new Application({
+            applicationId: generateUniqueId(), // Generate or assign a unique ID
+            applicantName,
+            applicantId,
+            homeId,
+            status: 'pending',
+        });
+
+        // Save the application to the database
+        await newApplication.save();
+        res.status(200).json({ message: 'Application submitted successfully', application: newApplication });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error saving application', error: error.message });
+        console.error(error);
+        res.status(500).json({ message: 'Error saving application', error: error.message });
     }
-  };
+};
+
 
   const countapplication = async (req, res) => {
     try {
       const totalApplications = await Application.countDocuments();
-      res.status(200).json({ totalApplications });
-    } catch (error) {
-      console.error('Error fetching total applications:', error);
-      res.status(500).json({ error: 'Failed to fetch total applications count' });
-    }
+      const pendingApplications = await Application.countDocuments({ status: 'pending' });
+
+      res.status(200).json({
+          totalApplications,
+          pendingApplications,
+      });
+  } catch (error) {
+      console.error('Error fetching application counts:', error);
+      res.status(500).json({ error: 'Failed to fetch application counts' });
+  }
   };
 
   const getApplications = async (req, res) => {
@@ -363,19 +390,40 @@ const deleteuser = async (req, res) => {
   const approveApplication = async (req, res) => {  
     const { id } = req.params;
     try {
-      const updatedApplication = await Application.findByIdAndUpdate(
-        id,
-        { status: "approved" },
-        { new: true }
-      );
-      if (!updatedApplication) return res.status(404).json({ error: "Application not found" });
-  
-      res.status(200).json({ message: "Application approved", application: updatedApplication });
+        // Find the application by ID
+        const application = await Application.findById(id).populate('homeId'); // Assuming homeId is populated from the Application model
+        
+        if (!application) {
+            return res.status(404).json({ error: "Application not found" });
+        }
+
+        // Update application status to 'approved'
+        application.status = 'approved';
+        const updatedApplication = await application.save();
+
+        // Update the corresponding home's status to 'rented'
+        const updatedHome = await Home.findByIdAndUpdate(
+            application.homeId._id, // Reference to the home via application
+            { status: 'rented' },
+            { new: true }
+        );
+
+        if (!updatedHome) {
+            return res.status(500).json({ error: "Failed to update home status" });
+        }
+
+        // Send a response with the updated application and home status
+        res.status(200).json({
+            message: "Application approved, and home status updated to rented",
+            application: updatedApplication,
+            home: updatedHome,
+        });
     } catch (error) {
-      console.error("Error approving application:", error);
-      res.status(500).json({ error: "Failed to approve application" });
+        console.error("Error approving application:", error);
+        res.status(500).json({ error: "Failed to approve application" });
     }
-  };
+};
+
 
   const deleteApplication = async (req, res) => {
     const { id } = req.params;
@@ -399,5 +447,16 @@ const deleteuser = async (req, res) => {
     }
   };
   
+
+  const getUserApplications = async (req, res) => {
+    try {
+      const applicantId = req.params.applicantId;
+      const applications = await Application.find({ applicantId }).populate('homeId', 'location price');
+      res.status(200).json(applications);
+  } catch (error) {
+      console.error('Error fetching applications:', error);
+      res.status(500).json({ error: 'Failed to fetch applications' });
+  }
+  };
   
-module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getApplications,approveApplication,deleteApplication}
+module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getApplications,approveApplication,deleteApplication,getUserApplications}

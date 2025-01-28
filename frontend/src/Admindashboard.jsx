@@ -4,34 +4,38 @@ import "./Dashboard.css";
 
 const Dashboard = () => {
   const [totalHomes, setTotalHomes] = useState(0);
+  const [availableHomes, setAvailableHomes] = useState(0);
+  const [rentedHomes, setRentedHomes] = useState(0);
   const [totalRequests, setTotalRequests] = useState(0);
+  const [pendingRequests, setPendingRequests] = useState(0);
   const navigate = useNavigate();
+
   useEffect(() => {
-    // Fetch total homes count
+    // Fetch homes count (total, available, rented)
     fetch('http://localhost:3000/users/api/home/count')
       .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch total homes count");
+        if (!res.ok) throw new Error("Failed to fetch home count data");
         return res.json();
       })
       .then((data) => {
-        //console.log("Total Homes Data:", data); // Debugging output
-        setTotalHomes(data.totalHomes || 0); // Use the correct key
+        setTotalHomes(data.totalHomes || 0);
+        setAvailableHomes(data.availableHomes || 0);
+        setRentedHomes(data.rentedHomes || 0);
       })
-      .catch((err) => console.error("Error fetching total homes:", err));
-  
-    // Fetch total requests count
+      .catch((err) => console.error("Error fetching homes:", err));
+
+    // Fetch applications count (total, pending)
     fetch('http://localhost:3000/users/api/application/count')
       .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch total requests count");
+        if (!res.ok) throw new Error("Failed to fetch application count data");
         return res.json();
       })
       .then((data) => {
-        //console.log("Total Requests Data:", data); // Debugging output
-        setTotalRequests(data.totalApplications || 0); // Match backend response key
+        setTotalRequests(data.totalApplications || 0);
+        setPendingRequests(data.pendingApplications || 0);
       })
-      .catch((err) => console.error("Error fetching total requests:", err));
+      .catch((err) => console.error("Error fetching applications:", err));
   }, []);
-  
 
   const handleLogout = () => {
     localStorage.clear();
@@ -83,13 +87,30 @@ const Dashboard = () => {
           <h1>Welcome, Admin</h1>
         </div>
         <div className="widgets">
-          <div className="widget">
-            <h3>Total Homes</h3>
-            <p>{totalHomes}</p>
+          <div className="homes-widget-container">
+            <div className="widget">
+              <h3>Total Homes</h3>
+              <p>{totalHomes}</p>
+            </div>
+            <div className="widget">
+              <h3>Available Homes</h3>
+              <p>{availableHomes}</p>
+            </div>
+            <div className="widget">
+              <h3>Rented Homes</h3>
+              <p>{rentedHomes}</p>
+            </div>
           </div>
-          <div className="widget">
-            <h3>New Requests</h3>
-            <p>{totalRequests}</p>
+
+          <div className="applications-widget-container">
+            <div className="widget">
+              <h3>Total Applications</h3>
+              <p>{totalRequests}</p>
+            </div>
+            <div className="widget">
+              <h3>New/Pending Applications</h3>
+              <p>{pendingRequests}</p>
+            </div>
           </div>
         </div>
       </div>
