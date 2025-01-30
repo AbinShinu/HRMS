@@ -8,6 +8,17 @@ const HomesList = () => {
   const [error, setError] = useState(null);
   const [selectedHome, setSelectedHome] = useState(null); // State for selected home
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editData, setEditData] = useState({
+    category: '',
+    price: '',
+    contactPersonName: '',
+    contactPersonEmail: '',
+    contactPersonPhone: '',
+    status: '',
+  });
+  
+
 
   useEffect(() => {
     // Fetch homes from the API
@@ -59,6 +70,48 @@ const HomesList = () => {
     }
   };
 
+  const handleEdit = (homeId) => {
+    const home = homes.find((home) => home._id === homeId);
+    setEditData(home);
+    setIsEditModalOpen(true);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  
+
+  const handleEditSubmit = () => {
+    const token1 = localStorage.getItem("authToken"); // Retrieve the token
+    //console.log(editData._id);
+   // const homeId = editData._id;
+  
+    if (!token1) {
+      alert("You must be logged in to edit a home.");
+      return;
+    }
+   //console.log("Submitting data:", editData); // Log the data
+  
+    axios
+      .put(`http://localhost:3000/users/api/home/${editData._id}`,editData,  {
+        headers: { Authorization: `Bearer ${token1}` }, // Pass the token in the Authorization header
+        })
+      .then((response) => {
+        alert('Home updated successfully');
+        //setHomes(homes.map(home => home._id === editData._id ? response.data : home));
+        setIsEditModalOpen(false);
+      })
+      .catch((err) => {
+        console.error('Error updating home:', err);
+        alert('Failed to update home.');
+      });
+  };
+  
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -93,6 +146,13 @@ const HomesList = () => {
                 >
                   Remove
                 </button>
+                <button
+                  onClick={() => handleEdit(home._id)}
+                  style={styles.editButton}
+                >
+                  Edit
+                </button>
+                  
 
                 {/* Render full details only if View More is clicked */}
                 {selectedHome && selectedHome._id === home._id && (
@@ -127,6 +187,30 @@ const HomesList = () => {
             <p><strong>Contact Phone:</strong> {selectedHome.contactPersonPhone}</p>
             <p><strong>Applicants:</strong> {selectedHome.applicants.length}</p>
             <button onClick={handleCloseModal} style={styles.closeButton}>Close</button>
+          </div>
+        </div>
+      )}
+
+            {isEditModalOpen && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modalContent}>
+            <h2>Edit Home</h2>
+            <label>Location:</label>
+            <input type="text" name="location" value={editData.location} onChange={handleEditChange} />
+            <label>Category:</label>
+            <input type="text" name="category" value={editData.category} onChange={handleEditChange} />
+            <label>Price:</label>
+            <input type="text" name="price" value={editData.price} onChange={handleEditChange} />
+            <label>Contact Name:</label>
+            <input type="text" name="contactPersonName" value={editData.contactPersonName} onChange={handleEditChange} />
+            <label>Contact Email:</label>
+            <input type="email" name="contactPersonEmail" value={editData.contactPersonEmail} onChange={handleEditChange} />
+            <label>Contact Phone:</label>
+            <input type="text" name="contactPersonPhone" value={editData.contactPersonPhone} onChange={handleEditChange} />
+            <label>Status:</label>
+            <input type="text" name="status" value={editData.status} onChange={handleEditChange} />
+            <button onClick={handleEditSubmit} style={styles.closeButton}>Save</button>
+            <button onClick={() => setIsEditModalOpen(false)} style={styles.closeButton}>Cancel</button>
           </div>
         </div>
       )}
@@ -188,6 +272,15 @@ const styles = {
     marginTop: "10px",
     cursor: "pointer",
     backgroundColor: "#28a745", // Green color for "Close" button
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+  },
+  editButton: {
+    padding: "5px 10px",
+    margin: "5px",
+    cursor: "pointer",
+    backgroundColor: "#28a745",
     color: "white",
     border: "none",
     borderRadius: "4px",

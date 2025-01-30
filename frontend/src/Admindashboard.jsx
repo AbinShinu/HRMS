@@ -55,7 +55,7 @@ const Dashboard = () => {
           </li>
           <li>
             <Link to="/getuser">
-              <i className="fas fa-users"></i> View Tenants
+              <i className="fas fa-users"></i> Manage Tenants
             </Link>
           </li>
           <li>
@@ -65,12 +65,12 @@ const Dashboard = () => {
           </li>
           <li>
             <Link to="/viewhome">
-              <i className="fas fa-home"></i> View Homes
+              <i className="fas fa-home"></i> Manage Homes
             </Link>
           </li>
           <li>
             <Link to="/getApplication">
-              <i className="fas fa-file-alt"></i> View Applications
+              <i className="fas fa-file-alt"></i> Manage Application 
             </Link>
           </li>
           <li>

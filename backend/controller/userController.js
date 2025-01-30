@@ -458,5 +458,39 @@ const deleteuser = async (req, res) => {
       res.status(500).json({ error: 'Failed to fetch applications' });
   }
   };
-  
-module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getApplications,approveApplication,deleteApplication,getUserApplications}
+
+  const editHome = async (req, res) => {
+    const { homeId } = req.params;
+    
+
+    try {
+        const home = await Home.findById(homeId);
+        if (!home) {
+            return res.status(404).json({ message: 'Home not found' });
+        }
+
+        
+
+        // Update home details
+        if (req.body.location) home.location = req.body.location;
+        if (req.body.price) home.price = req.body.price;
+        if (req.body.category) home.category = req.body.category;
+        if (req.body.imageUrl) home.imageUrl = req.body.imageUrl;
+        if (req.body.contactPersonName) home.contactPersonName = req.body.contactPersonName;
+        if (req.body.contactPersonPhone) home.contactPersonPhone = req.body.contactPersonPhone;
+        if (req.body.contactPersonEmail) home.contactPersonEmail = req.body.contactPersonEmail;
+        if (req.body.status) home.status = req.body.status;
+
+        // Save the updated home
+        await home.save();
+        
+
+        // Respond with the updated home
+        res.status(200).json({ message: 'Home updated successfully', home });
+    } catch (error) {
+        console.error('Error updating home:', error);
+        res.status(500).json({ message: 'Failed to update home' });
+    }
+};
+
+module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getApplications,approveApplication,deleteApplication,getUserApplications,editHome}
