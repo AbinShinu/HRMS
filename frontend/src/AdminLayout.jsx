@@ -1,35 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Dashboard.css";
 
-const Dashboard = () => {
-  const [totalHomes, setTotalHomes] = useState(0);
-  const [availableHomes, setAvailableHomes] = useState(0);
-  const [rentedHomes, setRentedHomes] = useState(0);
-  const [totalRequests, setTotalRequests] = useState(0);
-  const [pendingRequests, setPendingRequests] = useState(0);
+const AdminLayout = ({ children }) => {
   const [showManageHomes, setShowManageHomes] = useState(false);
   const [showManageApplications, setShowManageApplications] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch("http://localhost:3000/users/api/home/count")
-      .then((res) => res.json())
-      .then((data) => {
-        setTotalHomes(data.totalHomes || 0);
-        setAvailableHomes(data.availableHomes || 0);
-        setRentedHomes(data.rentedHomes || 0);
-      })
-      .catch((err) => console.error("Error fetching homes:", err));
-
-    fetch("http://localhost:3000/users/api/application/count")
-      .then((res) => res.json())
-      .then((data) => {
-        setTotalRequests(data.totalApplications || 0);
-        setPendingRequests(data.pendingApplications || 0);
-      })
-      .catch((err) => console.error("Error fetching applications:", err));
-  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -42,6 +17,9 @@ const Dashboard = () => {
       <div className="sidebar">
         <h2>HRMS Admin</h2>
         <ul>
+            <li>
+                <Link to ="/admindashboard" className="sidebar-link">Dashboard</Link>   
+            </li>
           {/* Manage Homes with dropdown */}
           <li onClick={() => setShowManageHomes(!showManageHomes)}>
             <i className="fas fa-home"></i> Manage Homes
@@ -102,36 +80,10 @@ const Dashboard = () => {
         <div className="header">
           <h1>Welcome, Admin</h1>
         </div>
-        <div className="widgets">
-          <div className="homes-widget-container">
-            <div className="widget">
-              <h3>Total Homes</h3>
-              <p>{totalHomes}</p>
-            </div>
-            <div className="widget">
-              <h3>Available Homes</h3>
-              <p>{availableHomes}</p>
-            </div>
-            <div className="widget">
-              <h3>Rented Homes</h3>
-              <p>{rentedHomes}</p>
-            </div>
-          </div>
-
-          <div className="applications-widget-container">
-            <div className="widget">
-              <h3>Total Applications</h3>
-              <p>{totalRequests}</p>
-            </div>
-            <div className="widget">
-              <h3>New/Pending Applications</h3>
-              <p>{pendingRequests}</p>
-            </div>
-          </div>
-        </div>
+        {children}
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default AdminLayout;

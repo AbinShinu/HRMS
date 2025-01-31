@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './viewhome.css';
+import AdminLayout from './AdminLayout';
 
 const HomesList = () => {
   const [homes, setHomes] = useState([]);
@@ -121,6 +122,7 @@ const HomesList = () => {
   }
 
   return (
+    <AdminLayout>
     <div className="homes-list">
       <h1>Available Homes</h1>
       {homes.length > 0 ? (
@@ -185,7 +187,7 @@ const HomesList = () => {
             <p><strong>Contact Person:</strong> {selectedHome.contactPersonName}</p>
             <p><strong>Contact Email:</strong> {selectedHome.contactPersonEmail}</p>
             <p><strong>Contact Phone:</strong> {selectedHome.contactPersonPhone}</p>
-            <p><strong>Applicants:</strong> {selectedHome.applicants.length}</p>
+            <p><strong>Tenant:</strong> {selectedHome.applicants.length}</p>
             <button onClick={handleCloseModal} style={styles.closeButton}>Close</button>
           </div>
         </div>
@@ -215,6 +217,7 @@ const HomesList = () => {
         </div>
       )}
     </div>
+    </AdminLayout>
   );
 };
 

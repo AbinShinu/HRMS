@@ -94,7 +94,7 @@ const HomePage2 = () => {
                 <nav>
                     <ul>
                         <li>
-                            <Link to="/profilesettings" className="sidebar-link">Profile Settings</Link>
+                            <Link to="/userprofile" className="sidebar-link">Profile Settings</Link>
                         </li>
                         <li>
                             <Link to="/trackapplication" className="sidebar-link">Track Applications</Link>

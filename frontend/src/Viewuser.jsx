@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import AdminLayout from "./AdminLayout";
 
 const UsersList = () => {
   const [users, setUsers] = useState([]); // State to store users
@@ -53,6 +54,7 @@ const UsersList = () => {
   };
 
   return (
+    <AdminLayout>
     <div style={{ padding: "20px" }}>
       <h1>Tenants List</h1>
 
@@ -123,6 +125,7 @@ const UsersList = () => {
         </div>
       )}
     </div>
+    </AdminLayout>
   );
 };
 

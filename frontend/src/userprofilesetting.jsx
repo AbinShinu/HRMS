@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import AdminLayout from './AdminLayout';
+import UserLayout from './TenantsLayout';
 
-const ProfileSettings = () => {
+const UserProfileSettings = () => {
   const [profile, setProfile] = useState({
     name: '',
     email: '',
@@ -67,7 +67,7 @@ const ProfileSettings = () => {
   };
 
   return (
-    <AdminLayout>
+    <UserLayout>
       <div style={styles.container}>
         <h2 style={styles.heading}>Profile Settings</h2>
         
@@ -82,7 +82,7 @@ const ProfileSettings = () => {
             style={styles.input}
           />
         </div>
-
+        
         <div style={styles.formGroup}>
           <label style={styles.label}>Email:</label>
           <input
@@ -94,7 +94,7 @@ const ProfileSettings = () => {
             style={styles.input}
           />
         </div>
-
+        
         <div style={styles.formGroup}>
           <label style={styles.label}>Phone:</label>
           <input
@@ -118,7 +118,7 @@ const ProfileSettings = () => {
           )}
         </div>
       </div>
-    </AdminLayout>
+    </UserLayout>
   );
 };
 
@@ -126,28 +126,27 @@ const ProfileSettings = () => {
 const styles = {
   container: {
     width: '100%',
-    maxWidth: '500px',
+    maxWidth: '600px',
     margin: '50px auto',
     padding: '30px',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f7f7f7',
     borderRadius: '10px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    textAlign: 'center',
   },
   heading: {
+    textAlign: 'center',
     fontSize: '24px',
     color: '#333',
     marginBottom: '20px',
   },
   formGroup: {
-    marginBottom: '15px',
-    textAlign: 'left',
+    marginBottom: '20px',
   },
   label: {
     display: 'block',
     fontSize: '16px',
     color: '#555',
-    marginBottom: '5px',
+    marginBottom: '8px',
   },
   input: {
     width: '100%',
@@ -157,13 +156,11 @@ const styles = {
     borderRadius: '5px',
     backgroundColor: 'black',
     transition: 'border-color 0.3s ease',
-    outline: 'none',
   },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
     gap: '15px',
-    marginTop: '20px',
   },
   editButton: {
     backgroundColor: 'green',
@@ -197,4 +194,4 @@ const styles = {
   },
 };
 
-export default ProfileSettings;
+export default UserProfileSettings;

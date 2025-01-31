@@ -257,7 +257,6 @@ const deleteuser = async (req, res) => {
         return res.status(400).json({ error: "A home with the same details already exists" });
       }
   
-  
       // Prepare the home object
       const homeItem = {
         location: req.body.location,
@@ -267,10 +266,8 @@ const deleteuser = async (req, res) => {
         contactPersonName: req.body.contactPersonName,
         contactPersonPhone: req.body.contactPersonPhone,
         contactPersonEmail: req.body.contactPersonEmail,
-        status: req.body.status || "available", // Default status is 'available'
-        
+        status: "available", // Set status to 'available' by default
       };
-      //console.log("Request Body:", req.body);
   
       // Create a new home instance
       const home = new Home(homeItem);
@@ -285,6 +282,7 @@ const deleteuser = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+  
   
   const deletehome = async (req, res) => {
     try {
@@ -390,8 +388,8 @@ const deleteuser = async (req, res) => {
   const approveApplication = async (req, res) => {  
     const { id } = req.params;
     try {
-        // Find the application by ID
-        const application = await Application.findById(id).populate('homeId'); // Assuming homeId is populated from the Application model
+        // Find the application by ID and populate home details
+        const application = await Application.findById(id).populate('homeId'); 
         
         if (!application) {
             return res.status(404).json({ error: "Application not found" });
@@ -401,10 +399,13 @@ const deleteuser = async (req, res) => {
         application.status = 'approved';
         const updatedApplication = await application.save();
 
-        // Update the corresponding home's status to 'rented'
+        // Update the corresponding home's status to 'rented' and add the tenant details
         const updatedHome = await Home.findByIdAndUpdate(
-            application.homeId._id, // Reference to the home via application
-            { status: 'rented' },
+            application.homeId._id,
+            { 
+                status: 'rented',
+                $addToSet: { applicants: { tenantId: application.applicantId, appliedAt: new Date() } } // Add tenant if not already present
+            },
             { new: true }
         );
 
@@ -414,7 +415,7 @@ const deleteuser = async (req, res) => {
 
         // Send a response with the updated application and home status
         res.status(200).json({
-            message: "Application approved, and home status updated to rented",
+            message: "Application approved, home status updated to rented, and tenant added to home record",
             application: updatedApplication,
             home: updatedHome,
         });

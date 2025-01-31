@@ -70,7 +70,6 @@ const LoginForm = () => {
             })}
             type="email"
             id="email"
-            placeholder="Enter your email"
           />
           {errors.email && <p className="error-text">{errors.email.message}</p>}
         </div>
@@ -87,7 +86,7 @@ const LoginForm = () => {
             })}
             type="password"
             id="password"
-            placeholder="Enter your password"
+           
           />
           {errors.password && <p className="error-text">{errors.password.message}</p>}
         </div>

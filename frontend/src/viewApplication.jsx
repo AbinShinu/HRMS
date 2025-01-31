@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Applications.css"; // Optional CSS for styling
-
+import AdminLayout from "./AdminLayout";
 const Applications = () => {
   const [applications, setApplications] = useState([]);
 
@@ -59,6 +59,7 @@ const Applications = () => {
   };
 
   return (
+    <AdminLayout>
     <div className="applications-container">
       <h1>Applications</h1>
       {applications.length > 0 ? (
@@ -125,6 +126,7 @@ const Applications = () => {
         <p>No applications found.</p>
       )}
     </div>
+    </AdminLayout>
   );
 };
 

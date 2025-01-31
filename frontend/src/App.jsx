@@ -11,6 +11,7 @@ import HomesList from './Viewhome';
 import UsersList from './Viewuser';
 import Applications from './viewApplication';
 import TrackApplications from './trackapplication';
+import UserProfileSettings from './userprofilesetting';
 
 
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/getuser" element={<UsersList />} />
           <Route path="/getApplication" element={<Applications />} />
           <Route path="/trackapplication" element={<TrackApplications />} />
+          <Route path="/userprofile" element={<UserProfileSettings />} />
           
             </Routes>
         </Router>

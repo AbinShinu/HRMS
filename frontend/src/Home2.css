@@ -241,4 +241,45 @@ nav ul li {
 .book-now-btn:hover {
     background-color: #218838; /* Darker green on hover */
 }
-
+.sidebar h2 {
+    margin-bottom: 30px;
+  }
+  
+  .sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    margin: 15px 0;
+  }
+  
+  .sidebar ul li .sidebar-link {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    display: block;
+  }
+  
+  .sidebar ul li button {
+    color: white;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .sidebar .submenu {
+    padding-left: 20px;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .main-content .header {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  

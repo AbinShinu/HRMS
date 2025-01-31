@@ -134,3 +134,31 @@ body {
     width: 100%; /* Make widgets take full width on smaller screens */
   }
 }
+.submenu {
+  list-style: none;
+  padding-left: 20px;
+}
+
+.submenu li {
+  margin-top: 5px;
+}
+
+.submenu li a {
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.submenu li a:hover {
+  text-decoration: underline;
+}
+.fas.fa-chevron-right {
+  float: right;
+  transition: transform 0.3s ease;
+}
+
+.fas.fa-chevron-down {
+  float: right;
+  transform: rotate(90deg);
+  transition: transform 0.3s ease;
+}
