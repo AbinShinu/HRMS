@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import "./Dashboard.css";
 
 const Dashboard = () => {
@@ -33,7 +33,7 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    Navigate("/login");
   };
 
   return (
@@ -73,10 +73,10 @@ const Dashboard = () => {
           {showManageApplications && (
             <ul className="submenu">
               <li>
-                <Link to="/getApplication">➤ Application History</Link>
+                <Link to="/AllApplication">➤ Application History</Link>
               </li>
               <li>
-                <Link to="/applications">➤ Applications</Link>
+                <Link to="/getPendingApplication">➤ New Applications</Link>
               </li>
             </ul>
           )}

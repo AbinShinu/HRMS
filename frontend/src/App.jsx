@@ -12,6 +12,7 @@ import UsersList from './Viewuser';
 import Applications from './viewApplication';
 import TrackApplications from './trackapplication';
 import UserProfileSettings from './userprofilesetting';
+import AllApplications from './viewallApplication';
 
 
 
@@ -28,9 +29,10 @@ function App() {
           <Route path="/profilesettings" element={<ProfileSettings />} />
           <Route path="/viewhome" element={<HomesList />} />
           <Route path="/getuser" element={<UsersList />} />
-          <Route path="/getApplication" element={<Applications />} />
+          <Route path="/getPendingApplication" element={<Applications />} />
           <Route path="/trackapplication" element={<TrackApplications />} />
           <Route path="/userprofile" element={<UserProfileSettings />} />
+          <Route path="/allApplication" element={<AllApplications />} />
           
             </Routes>
         </Router>

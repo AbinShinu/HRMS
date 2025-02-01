@@ -187,7 +187,19 @@ const HomesList = () => {
             <p><strong>Contact Person:</strong> {selectedHome.contactPersonName}</p>
             <p><strong>Contact Email:</strong> {selectedHome.contactPersonEmail}</p>
             <p><strong>Contact Phone:</strong> {selectedHome.contactPersonPhone}</p>
-            <p><strong>Tenant:</strong> {selectedHome.applicants.length}</p>
+            <p><strong>Tenant:</strong> 
+  {selectedHome.applicants && selectedHome.applicants.length > 0 ? (
+    selectedHome.applicants.map((applicant, index) => (
+      <span key={index} style={{ marginRight: '10px' }}>
+        {applicant.tenantId.name}
+      </span> // Display applicant's name inline
+    ))
+  ) : (
+    <span>No applicants available.</span>
+  )}
+</p>
+
+
             <button onClick={handleCloseModal} style={styles.closeButton}>Close</button>
           </div>
         </div>

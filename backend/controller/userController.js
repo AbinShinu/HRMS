@@ -24,12 +24,19 @@ const getuser = async (req,res) => {
 }
 const gethome = async (req,res) => {
   try {
-    const homes = await Home.find().populate('applicants.tenantId', 'name email'); // Populating tenant details
-    res.status(200).json(homes);
-  } catch (error) {
-    console.error('Error fetching homes:', error);
-    res.status(500).json({ error: 'Failed to fetch homes' });
-  } 
+    const homes = await Home.find()
+      .populate({
+        path: 'applicants.tenantId', // Populate the tenantId field in applicants
+        select: 'name', // Only select the 'name' field from User model
+      })
+      .exec();
+
+    res.json(homes); // Return the homes with populated applicant names
+  } catch (err) {
+    console.error('Error fetching homes:', err);
+    res.status(500).json({ message: 'Failed to load homes.' });
+  }
+
 }
 const fetchdata = async (req, res) => {
   try {
@@ -375,15 +382,19 @@ const deleteuser = async (req, res) => {
   }
   };
 
-  const getApplications = async (req, res) => {
+  const getPendingApplications= async (req, res) => {
     try {
-      const applications = await Application.find().populate('applicantId').populate('homeId');
+      const applications = await Application.find({ status: 'pending' })
+        .populate('applicantId')
+        .populate('homeId');
+      
       res.status(200).json(applications);
     } catch (error) {
       console.error('Error fetching applications:', error);
       res.status(500).json({ error: 'Failed to fetch applications' });
     }
   };
+  
 
   const approveApplication = async (req, res) => {  
     const { id } = req.params;
@@ -494,4 +505,17 @@ const deleteuser = async (req, res) => {
     }
 };
 
-module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getApplications,approveApplication,deleteApplication,getUserApplications,editHome}
+const getAllApplications = async (req, res) => {
+  try {
+    const applications = await Application.find()
+      .populate("applicantId")
+      .populate("homeId");
+    res.json(applications);
+  } catch (error) {
+    console.error("Error fetching applications:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getPendingApplications,approveApplication,deleteApplication,getUserApplications,editHome,getAllApplications}

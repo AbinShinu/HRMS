@@ -8,7 +8,7 @@ const AdminLayout = ({ children }) => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    window.location.href = "/login";
   };
 
   return (
@@ -51,10 +51,10 @@ const AdminLayout = ({ children }) => {
           {showManageApplications && (
             <ul className="submenu">
               <li>
-                <Link to="/getApplication">➤ Application History</Link>
+                <Link to="/allApplication">➤ Application History</Link>
               </li>
               <li>
-                <Link to="/applications">➤ Applications</Link>
+                <Link to="/getPendingApplication">➤ Applications</Link>
               </li>
             </ul>
           )}
