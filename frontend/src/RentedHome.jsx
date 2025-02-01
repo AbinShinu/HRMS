@@ -3,7 +3,7 @@ import axios from 'axios';
 import './viewhome.css';
 import AdminLayout from './AdminLayout';
 
-const HomesList = () => {
+const RentedHomesList = () => {
   const [homes, setHomes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,11 +22,11 @@ const HomesList = () => {
 
 
   useEffect(() => {
-    // Fetch homes from the API
     axios
-      .get('http://localhost:3000/users/api/home') // Replace with your backend API endpoint
+      .get('http://localhost:3000/users/api/home')
       .then((response) => {
-        setHomes(response.data);
+        const availableHomes = response.data.filter(home => home.status === 'rented');
+        setHomes(availableHomes);
         setLoading(false);
       })
       .catch((err) => {
@@ -35,7 +35,6 @@ const HomesList = () => {
         setLoading(false);
       });
   }, []);
-
   const handleViewMore = (homeId) => {
     const home = homes.find((home) => home._id === homeId);
     setSelectedHome(home);
@@ -302,4 +301,4 @@ const styles = {
   },
 };
 
-export default HomesList;
+export default RentedHomesList;

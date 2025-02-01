@@ -99,6 +99,9 @@ const HomePage2 = () => {
                         <li>
                             <Link to="/trackapplication" className="sidebar-link">Track Applications</Link>
                         </li>
+                        <li>
+                            <Link to ="/tenanthome" className="sidebar-link">Rented Homes</Link>
+                        </li>
                         
                         <li>
                             <button 

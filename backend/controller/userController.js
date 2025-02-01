@@ -517,5 +517,35 @@ const getAllApplications = async (req, res) => {
   }
 };
 
+const tenanthome = async (req, res) => {  
+  try {
+    const tenantId = req.params.tenantId; // Tenant ID from URL
+    //console.log("Tenant ID:", tenantId); // Log the tenantId for debugging
+    // Find homes where the tenant is in the applicants array and status is 'rented'
+    const rentedHomes = await Home.find({
+        'applicants.tenantId': tenantId,
+        status: 'rented',
+    });
 
-module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getPendingApplications,approveApplication,deleteApplication,getUserApplications,editHome,getAllApplications}
+    if (!rentedHomes.length) {
+        return res.status(404).json({ message: 'No rented homes found for this user.' });
+    }
+
+    res.json(rentedHomes); // Return the list of rented homes
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error while fetching rented homes.' });
+}
+};
+
+const countTenants = async (req, res) => {
+  try {
+    const tenants = await User.countDocuments({ role: 'tenant' });
+    res.status(200).json({ totalTenants: tenants });
+  } catch (error) {
+    console.error('Error fetching tenant count:', error);
+    res.status(500).json({ error: 'Failed to fetch tenant count' });
+  }
+};
+
+module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getPendingApplications,approveApplication,deleteApplication,getUserApplications,editHome,getAllApplications,tenanthome,countTenants}

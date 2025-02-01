@@ -4,8 +4,6 @@ import './Home2.css';
 
 const UserLayout = ({ children }) => {
   const [showProfileSettings, setShowProfileSettings] = useState(false);
-  const [showTrackApplications, setShowTrackApplications] = useState(false);
-
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -26,32 +24,25 @@ const UserLayout = ({ children }) => {
             </Link>
           </li>
 
-          {/* Profile Settings Dropdown */}
-          <li onClick={() => setShowProfileSettings(!showProfileSettings)}>
-            <i className="fas fa-user-cog"></i> Profile Settings
-            <i className={`fas ${showProfileSettings ? "fa-chevron-down" : "fa-chevron-right"}`} />
+          {/* Profile Settings Direct Link */}
+          <li>
+            <Link to="/userprofile" className="sidebar-link">
+              <i className="fas fa-user-cog"></i> Profile Settings
+            </Link>
           </li>
-          {showProfileSettings && (
-            <ul className="submenu">
-              <li>
-                <Link to="/userprofile">➤ Update Profile</Link>
-              </li>
-              
-            </ul>
-          )}
 
-          {/* Track Applications Dropdown */}
-          <li onClick={() => setShowTrackApplications(!showTrackApplications)}>
-            <i className="fas fa-file-alt"></i> Track Applications
-            <i className={`fas ${showTrackApplications ? "fa-chevron-down" : "fa-chevron-right"}`} />
+          {/* Track Applications Direct Link */}
+          <li>
+            <Link to="/trackapplication" className="sidebar-link">
+              <i className="fas fa-file-alt"></i> Track My Applications
+            </Link>
           </li>
-          {showTrackApplications && (
-            <ul className="submenu">
-              <li>
-                <Link to="/trackapplication">➤ Track My Applications</Link>
-              </li>
-            </ul>
-          )}
+
+          <li>
+            <Link to="/tenanthome" className="sidebar-link">
+              <i className="fas fa-home"></i> Rented Homes
+            </Link>
+          </li>
 
           {/* Logout */}
           <li>

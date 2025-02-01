@@ -13,6 +13,9 @@ import Applications from './viewApplication';
 import TrackApplications from './trackapplication';
 import UserProfileSettings from './userprofilesetting';
 import AllApplications from './viewallApplication';
+import RentedHomesPage from './tenanthome';
+import AvailableHomesList from './AvailableHome';
+import RentedHomesList from './RentedHome';
 
 
 
@@ -33,6 +36,9 @@ function App() {
           <Route path="/trackapplication" element={<TrackApplications />} />
           <Route path="/userprofile" element={<UserProfileSettings />} />
           <Route path="/allApplication" element={<AllApplications />} />
+          <Route path="/tenanthome" element={<RentedHomesPage /> } />
+          <Route path="/availablehome" element={<AvailableHomesList />} />
+          <Route path="/rentedhome" element={<RentedHomesList />} />
           
             </Routes>
         </Router>

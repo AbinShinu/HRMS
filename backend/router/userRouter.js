@@ -4,7 +4,7 @@ const fs = require("fs");
 const cloudinary = require('../cloudinary.js');  
 
 
-const {getuser,login,adduser,deleteuser,authenticate,getUserById,addHome,gethome,profilesettings,fetchdata,deletehome,counthome,addApplication,countapplication,getPendingApplications,approveApplication,deleteApplication,getUserApplications,editHome,getAllApplications} = require('../controller/userController.js')
+const {getuser,login,adduser,deleteuser,authenticate,getUserById,addHome,gethome,profilesettings,fetchdata,deletehome,counthome,addApplication,countapplication,getPendingApplications,approveApplication,deleteApplication,getUserApplications,editHome,getAllApplications,tenanthome,countTenants} = require('../controller/userController.js')
 const upload = multer({ dest: "uploads/" }); // Temporary storage for files
 
 
@@ -55,4 +55,6 @@ userRouter.delete('/api/application/:id', deleteApplication);
 userRouter.get('/api/application/:applicantId', getUserApplications);
 userRouter.put('/api/home/:homeId',authenticate, editHome);
 userRouter.get('/api/application/all/applications',getAllApplications)
+userRouter.get('/api/rentedhomes/:tenantId',authenticate,tenanthome);
+userRouter.get('/api/tenant/count', countTenants);
 module.exports=userRouter
