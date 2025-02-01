@@ -34,7 +34,7 @@ const LoginForm = () => {
         if (userRole === "admin") {
           navigate("/Admindashboard");
         } else if (userRole === "tenant") {
-          navigate("/Home2");
+          navigate("/userdashboard");
         }
       })
       .catch((error) => {

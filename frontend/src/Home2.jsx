@@ -94,13 +94,16 @@ const HomePage2 = () => {
                 <nav>
                     <ul>
                         <li>
+                            <Link to="/userdashboard" className="sidebar-link">Dashboard</Link> 
+                        </li>
+                        <li>
                             <Link to="/userprofile" className="sidebar-link">Profile Settings</Link>
                         </li>
                         <li>
                             <Link to="/trackapplication" className="sidebar-link">Track Applications</Link>
                         </li>
                         <li>
-                            <Link to ="/tenanthome" className="sidebar-link">Rented Homes</Link>
+                            <Link to ="/tenanthome" className="sidebar-link">My Rented Homes</Link>
                         </li>
                         
                         <li>

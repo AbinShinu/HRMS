@@ -22,6 +22,7 @@ const getuser = async (req,res) => {
   
   
 }
+
 const gethome = async (req,res) => {
   try {
     const homes = await Home.find()
@@ -38,6 +39,7 @@ const gethome = async (req,res) => {
   }
 
 }
+
 const fetchdata = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -58,7 +60,6 @@ const fetchdata = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
-
 
 const getUserById = async (req, res) => {
   const userId = req.params.id;  // This should be a valid ObjectId
@@ -118,10 +119,6 @@ const login = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
-
-
 
 const adduser = async (req, res) => {
   try {
@@ -199,10 +196,6 @@ const profilesettings = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
-  
-  
   
 const deleteuser = async (req, res) => {
   try {
@@ -226,7 +219,6 @@ const deleteuser = async (req, res) => {
   }
 };
 
-
   const jwt = require('jsonwebtoken');
 
   const authenticate = (req, res, next) => {
@@ -248,9 +240,6 @@ const deleteuser = async (req, res) => {
     }
   };
   
-  
-  
-
   const addHome = async (req, res) => {
     try {
       // Check if a home with the same location and category already exists
@@ -289,7 +278,6 @@ const deleteuser = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
-  
   
   const deletehome = async (req, res) => {
     try {
@@ -365,7 +353,6 @@ const deleteuser = async (req, res) => {
         res.status(500).json({ message: 'Error saving application', error: error.message });
     }
 };
-
 
   const countapplication = async (req, res) => {
     try {

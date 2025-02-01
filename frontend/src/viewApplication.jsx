@@ -61,7 +61,7 @@ const Applications = () => {
   return (
     <AdminLayout>
     <div className="applications-container">
-      <h1>Applications</h1>
+    <h1 style={{ color: 'white' }}>Pending Applications</h1>
       {applications.length > 0 ? (
         <table className="applications-table">
           <thead>

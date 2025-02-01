@@ -16,6 +16,7 @@ import AllApplications from './viewallApplication';
 import RentedHomesPage from './tenanthome';
 import AvailableHomesList from './AvailableHome';
 import RentedHomesList from './RentedHome';
+import UserDashboard from './userdashboard';
 
 
 
@@ -27,7 +28,7 @@ function App() {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<Registration />} />
           <Route path="/admindashboard" element={<Dashboard />} />
-          <Route path="/home2" element={<HomePage2/>} />
+          <Route path="/bookhome" element={<HomePage2/>} />
           <Route path="/addhome" element={<AddHomeForm />} />
           <Route path="/profilesettings" element={<ProfileSettings />} />
           <Route path="/viewhome" element={<HomesList />} />
@@ -39,6 +40,7 @@ function App() {
           <Route path="/tenanthome" element={<RentedHomesPage /> } />
           <Route path="/availablehome" element={<AvailableHomesList />} />
           <Route path="/rentedhome" element={<RentedHomesList />} />
+          <Route path="/userdashboard" element={<UserDashboard />} />
           
             </Routes>
         </Router>

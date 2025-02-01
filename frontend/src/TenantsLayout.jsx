@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import './Home2.css';
 
 const UserLayout = ({ children }) => {
-  const [showProfileSettings, setShowProfileSettings] = useState(false);
+  //const [showProfileSettings, setShowProfileSettings] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -19,8 +19,13 @@ const UserLayout = ({ children }) => {
         <ul>
           {/* Dashboard Link */}
           <li>
-            <Link to="/home2" className="sidebar-link">
+            <Link to="/userdashboard" className="sidebar-link">
               Dashboard
+            </Link>
+          </li>
+          <li>
+            <Link to="/bookhome" className="sidebar-link">  
+              <i className="fas fa-home"></i> Book Home
             </Link>
           </li>
 
@@ -40,7 +45,7 @@ const UserLayout = ({ children }) => {
 
           <li>
             <Link to="/tenanthome" className="sidebar-link">
-              <i className="fas fa-home"></i> Rented Homes
+              <i className="fas fa-home"></i> My Rented Home
             </Link>
           </li>
 

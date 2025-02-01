@@ -123,7 +123,7 @@ const AvailableHomesList = () => {
   return (
     <AdminLayout>
     <div className="homes-list">
-      <h1>All Homes</h1>
+      <h1>Available Homes</h1>
       {homes.length > 0 ? (
         <div className="homes-grid">
           {homes.map((home) => (

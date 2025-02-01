@@ -27,7 +27,7 @@ const AllApplications = () => {
   return (
     <AdminLayout>
       <div className="applications-container">
-      <h1 style={{ color: 'white' }}>Applications</h1>
+      <h1 style={{ color: 'white' }}>All Applications</h1>
 
         {loading ? (
           <p>Loading applications...</p>

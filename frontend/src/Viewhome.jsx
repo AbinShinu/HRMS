@@ -195,7 +195,7 @@ const HomesList = () => {
       </span> // Display applicant's name inline
     ))
   ) : (
-    <span>No applicants available.</span>
+    <span>No Tenant</span>
   )}
 </p>
 
