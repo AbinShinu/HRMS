@@ -4,9 +4,11 @@ import './Home2.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 const HomePage2 = () => {
-    const [homes, setHomes] = useState([]); // Initialize as an empty array
-    const [selectedHome, setSelectedHome] = useState(null); // State for selected home
-    const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility state
+    const [homes, setHomes] = useState([]); 
+    const [filteredHomes, setFilteredHomes] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState("All");
+    const [selectedHome, setSelectedHome] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -15,7 +17,8 @@ const HomePage2 = () => {
         const fetchHomes = async () => {
             try {
                 const response = await axios.get('http://localhost:3000/users/api/home');
-                setHomes(response.data); // Update state with fetched data
+                setHomes(response.data);
+                setFilteredHomes(response.data); // Set initially filtered homes
             } catch (error) {
                 console.error('Error fetching homes:', error);
             }
@@ -23,6 +26,21 @@ const HomePage2 = () => {
 
         fetchHomes();
     }, []);
+
+    // Handle category filter change
+    const handleCategoryChange = (event) => {
+        const category = event.target.value;
+        setSelectedCategory(category);
+
+        if (category === "All") {
+            setFilteredHomes(homes);
+        } else {
+            setFilteredHomes(homes.filter(home => home.category === category));
+        }
+    };
+
+    // Extract unique categories
+    const categories = ["All", ...new Set(homes.map(home => home.category))];
 
     const handleViewDetails = (homeId) => {
         const home = homes.find((home) => home._id === homeId);
@@ -38,52 +56,32 @@ const HomePage2 = () => {
     const handleLogout = () => {
         navigate("/login");
     };
+
     const handleBookNow = async (homeId) => {
         try {
-            const applicantId = localStorage.getItem('userId'); // Assuming user is logged in
-            const token = localStorage.getItem('authToken'); // Assuming the token is saved in localStorage
+            const applicantId = localStorage.getItem('userId');
+            const token = localStorage.getItem('authToken');
             
-            if (!applicantId) {
-                alert('Missing user details');
-                return;
-            }
-            if (!token) {
-                alert('Missing token');
+            if (!applicantId || !token) {
+                alert('Missing user details or token');
                 return;
             }
     
             const applicationData = {
-                applicantName: "Applicant Name", // Add applicant name if necessary or retrieve it
+                applicantName: "Applicant Name",
                 applicantId,
                 homeId,
             };
     
-            // Send the application request to the backend
             const response = await axios.post(`http://localhost:3000/users/api/application/${homeId}`, applicationData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
+                headers: { Authorization: `Bearer ${token}` },
             });
     
-            if (response.data.message === 'This home is already rented. You cannot apply.') {
-                alert(response.data.message);  // Display rented home message
-            } else {
-                alert("Application submitted successfully!");
-                // Additional success logic if needed
-            }
+            alert(response.data.message || "Application submitted successfully!");
         } catch (error) {
-            console.error('Error submitting application:', error);
-            // Show the error message from the backend
-            if (error.response && error.response.data && error.response.data.message) {
-                alert(error.response.data.message); // Show the error message from the backend
-            } else {
-                alert("There was an error submitting your application.");
-            }
+            alert(error.response?.data?.message || "There was an error submitting your application.");
         }
     };
-    
-    
-      
 
     return (
         <>
@@ -93,29 +91,23 @@ const HomePage2 = () => {
                 <h2 className="dashboard-title">Welcome to HRMS</h2>
                 <nav>
                     <ul>
-                        <li>
-                            <Link to="/userdashboard" className="sidebar-link">Dashboard</Link> 
-                        </li>
-                        <li>
-                            <Link to="/userprofile" className="sidebar-link">Profile Settings</Link>
-                        </li>
-                        <li>
-                            <Link to="/trackapplication" className="sidebar-link">Track Applications</Link>
-                        </li>
-                        <li>
-                            <Link to ="/tenanthome" className="sidebar-link">My Rented Homes</Link>
-                        </li>
-                        
-                        <li>
-                            <button 
-                                onClick={handleLogout} 
-                                className="logout-btn"
-                            >
-                                Logout
-                            </button>
-                        </li>
+                        <li><Link to="/userdashboard" className="sidebar-link">Dashboard</Link></li>
+                        <li><Link to="/userprofile" className="sidebar-link">Profile Settings</Link></li>
+                        <li><Link to="/trackapplication" className="sidebar-link">Track Applications</Link></li>
+                        <li><Link to="/tenanthome" className="sidebar-link">My Rented Homes</Link></li>
+                        <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
                     </ul>
                 </nav>
+
+                {/* Category Filter */}
+                <div className="filter-section">
+                    <h3>Filter by Category</h3>
+                    <select className="category-filter" value={selectedCategory} onChange={handleCategoryChange}>
+                        {categories.map((category, index) => (
+                            <option key={index} value={category}>{category}</option>
+                        ))}
+                    </select>
+                </div>
             </div>
 
             {/* Main Content */}
@@ -124,55 +116,44 @@ const HomePage2 = () => {
                     <h1>Find Your Dream Home Today!</h1>
                 </header>
 
-                
-
                 <main className="homes-list">
-    <h1>Available Homes</h1>
-    {homes.length > 0 ? (
-        <div className="homes-grid">
-            {homes.map((home) => (
-                <div key={home._id} className="home-card">
-                    <img 
-                        src={home.imageUrl[0]} 
-                        alt={home.category} 
-                        className="home-image"
-                    />
-                    <div className="home-details">
-                        <h3>{home.location}</h3>
-                        <p>Price: ₹{home.price}</p>
-                        <p>Category: {home.category}</p>
-                        <div className="home-buttons">
-                            <button
-                                onClick={() => handleViewDetails(home._id)}
-                                className="view-more-btn"
-                            >
-                                View Details
-                            </button>
-                            <button
-                                onClick={() => handleBookNow(home._id)}
-                                className="book-now-btn"
-                            >
-                                Book Now
-                            </button>
+                    <h1>Available Homes</h1>
+                    {filteredHomes.length > 0 ? (
+                        <div className="homes-grid">
+                            {filteredHomes.map((home) => (
+                                <div key={home._id} className="home-card">
+                                    <img 
+                                        src={home.imageUrl[0]} 
+                                        alt={home.category} 
+                                        className="home-image"
+                                    />
+                                    <div className="home-details">
+                                        <h3>{home.location}</h3>
+                                        <p>Price: ₹{home.price}</p>
+                                        <p>Category: {home.category}</p>
+                                        <div className="home-buttons">
+                                            <button onClick={() => handleViewDetails(home._id)} className="view-more-btn">
+                                                View Details
+                                            </button>
+                                            <button onClick={() => handleBookNow(home._id)} className="book-now-btn">
+                                                Book Now
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    ) : (
-        <p>No homes available at the moment.</p>
-    )}
-</main>
-
-
+                    ) : (
+                        <p>No homes available in this category.</p>
+                    )}
+                </main>
             </div>
 
-            {/* Modal to display home details */}
+            {/* Modal for Home Details */}
             {isModalOpen && selectedHome && (
                 <div style={styles.modalOverlay}>
                     <div style={styles.modalContent}>
                         <h2>Home Details</h2>
-                       
                         <p><strong>Location:</strong> {selectedHome.location}</p>
                         <p><strong>Price:</strong> ₹{selectedHome.price}</p>
                         <p><strong>Category:</strong> {selectedHome.category}</p>
@@ -180,39 +161,21 @@ const HomePage2 = () => {
                         <p><strong>Contact Person:</strong> {selectedHome.contactPersonName}</p>
                         <p><strong>Contact Email:</strong> {selectedHome.contactPersonEmail}</p>
                         <p><strong>Contact Phone:</strong> {selectedHome.contactPersonPhone}</p>
-                        
-                        <button 
-                            onClick={handleCloseModal} 
-                            style={styles.closeButton}
-                        >
-                            Close
-                        </button>
+                        <button onClick={handleCloseModal} style={styles.closeButton}>Close</button>
                     </div>
                 </div>
             )}
-
-            
         </div>
+
         <footer className="homepage-footer">
-                <p>Contact Us: +91 1234567890 | email@example.com</p>
-                <p>© 2025 HRMS. All Rights Reserved.</p>
-            </footer>
+            <p>Contact Us: +91 1234567890 | email@example.com</p>
+            <p>© 2025 HRMS. All Rights Reserved.</p>
+        </footer>
         </>
-        
     );
 };
 
 const styles = {
-    viewMoreButton: {
-        padding: "10px 15px",
-        marginTop: "10px",
-        cursor: "pointer",
-        backgroundColor: "#007bff", // Blue color for "View More" button
-        color: "white",
-        border: "none",
-        borderRadius: "4px",
-        fontSize: "14px",
-    },
     modalOverlay: {
         position: "fixed",
         top: 0,
@@ -238,7 +201,7 @@ const styles = {
         padding: "10px 15px",
         marginTop: "10px",
         cursor: "pointer",
-        backgroundColor: "#28a745", // Green color for "Close" button
+        backgroundColor: "#28a745",
         color: "white",
         border: "none",
         borderRadius: "4px",

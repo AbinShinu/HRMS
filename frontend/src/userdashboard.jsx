@@ -126,7 +126,7 @@ const styles = {
     },
     box: {
         height: '150px', // Increased box size
-        background: 'blue',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         padding: '20px',
         borderRadius: '8px',
         boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
