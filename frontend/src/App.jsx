@@ -17,6 +17,7 @@ import RentedHomesPage from './tenanthome';
 import AvailableHomesList from './AvailableHome';
 import RentedHomesList from './RentedHome';
 import UserDashboard from './userdashboard';
+import UserRentedHomesList from './userhome';
 
 
 
@@ -41,6 +42,7 @@ function App() {
           <Route path="/availablehome" element={<AvailableHomesList />} />
           <Route path="/rentedhome" element={<RentedHomesList />} />
           <Route path="/userdashboard" element={<UserDashboard />} />
+          <Route path="/userhome" element={<UserRentedHomesList />} />
           
             </Routes>
         </Router>

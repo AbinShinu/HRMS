@@ -44,7 +44,7 @@ const UserLayout = ({ children }) => {
           </li>
 
           <li>
-            <Link to="/tenanthome" className="sidebar-link">
+            <Link to="/userhome" className="sidebar-link">
               <i className="fas fa-home"></i> My Rented Home
             </Link>
           </li>

@@ -24,7 +24,7 @@ const UserDashboard = ({ children }) => {
                     <div style={styles.box} onClick={() => navigate('/trackapplication')}>
                         <h3>My Applications</h3>
                     </div>
-                    <div style={styles.box} onClick={() => navigate('/rentedhome')}>
+                    <div style={styles.box} onClick={() => navigate('/userhome')}>
                         <h3>My Home</h3>
                     </div>
                 </div>

@@ -7,18 +7,18 @@ const HomePage2 = () => {
     const [homes, setHomes] = useState([]); 
     const [filteredHomes, setFilteredHomes] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("All");
+    const [selectedPrice, setSelectedPrice] = useState("All");
     const [selectedHome, setSelectedHome] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const navigate = useNavigate();
 
-    // Fetch homes from the database
     useEffect(() => {
         const fetchHomes = async () => {
             try {
                 const response = await axios.get('http://localhost:3000/users/api/home');
                 setHomes(response.data);
-                setFilteredHomes(response.data); // Set initially filtered homes
+                setFilteredHomes(response.data);
             } catch (error) {
                 console.error('Error fetching homes:', error);
             }
@@ -27,20 +27,38 @@ const HomePage2 = () => {
         fetchHomes();
     }, []);
 
+    // Function to filter homes based on selected category and price
+    const filterHomes = (category, price) => {
+        let filtered = homes;
+
+        if (category !== "All") {
+            filtered = filtered.filter(home => home.category === category);
+        }
+
+        if (price === "below15000") {
+            filtered = filtered.filter(home => home.price < 15000);
+        } else if (price === "between15000and50000") {
+            filtered = filtered.filter(home => home.price >= 15000 && home.price <= 50000);
+        } else if (price === "above50000") {
+            filtered = filtered.filter(home => home.price > 50000);
+        }
+
+        setFilteredHomes(filtered);
+    };
+
     // Handle category filter change
     const handleCategoryChange = (event) => {
         const category = event.target.value;
         setSelectedCategory(category);
-
-        if (category === "All") {
-            setFilteredHomes(homes);
-        } else {
-            setFilteredHomes(homes.filter(home => home.category === category));
-        }
+        filterHomes(category, selectedPrice);
     };
 
-    // Extract unique categories
-    const categories = ["All", ...new Set(homes.map(home => home.category))];
+    // Handle price filter change
+    const handlePriceChange = (event) => {
+        const price = event.target.value;
+        setSelectedPrice(price);
+        filterHomes(selectedCategory, price);
+    };
 
     const handleViewDetails = (homeId) => {
         const home = homes.find((home) => home._id === homeId);
@@ -83,6 +101,9 @@ const HomePage2 = () => {
         }
     };
 
+    // Extract unique categories
+    const categories = ["All", ...new Set(homes.map(home => home.category))];
+
     return (
         <>
         <div className="dashboard">
@@ -94,18 +115,25 @@ const HomePage2 = () => {
                         <li><Link to="/userdashboard" className="sidebar-link">Dashboard</Link></li>
                         <li><Link to="/userprofile" className="sidebar-link">Profile Settings</Link></li>
                         <li><Link to="/trackapplication" className="sidebar-link">Track Applications</Link></li>
-                        <li><Link to="/tenanthome" className="sidebar-link">My Rented Homes</Link></li>
+                        <li><Link to="/userhome" className="sidebar-link">My Rented Homes</Link></li>
                         <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
                     </ul>
                 </nav>
 
-                {/* Category Filter */}
+                {/* Filters */}
                 <div className="filter-section">
                     <h3>Filter by Category</h3>
                     <select className="category-filter" value={selectedCategory} onChange={handleCategoryChange}>
                         {categories.map((category, index) => (
                             <option key={index} value={category}>{category}</option>
                         ))}
+                    </select>
+                    <h3>Filter by Price</h3>
+                    <select value={selectedPrice} onChange={handlePriceChange}>
+                        <option value="All">All</option>
+                        <option value="below15000">Below ₹15,000</option>
+                        <option value="between15000and50000">₹15,000 - ₹50,000</option>
+                        <option value="above50000">Above ₹50,000</option>
                     </select>
                 </div>
             </div>
@@ -144,7 +172,7 @@ const HomePage2 = () => {
                             ))}
                         </div>
                     ) : (
-                        <p>No homes available in this category.</p>
+                        <p>No homes available in this category and price range.</p>
                     )}
                 </main>
             </div>
