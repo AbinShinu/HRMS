@@ -59,7 +59,7 @@ const LoginForm = () => {
         <h2>Login</h2>
 
         <div className="form-group">
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email</label>
           <input
             {...register("email", {
               required: "Email is required",
@@ -75,7 +75,7 @@ const LoginForm = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password">Password</label>
           <input
             {...register("password", {
               required: "Password is required",
@@ -100,7 +100,7 @@ const LoginForm = () => {
             onClick={goToSignup}
             className="signup-button"
           >
-            Sign Up
+             Sign Up
           </button>
         </div>
       </form>

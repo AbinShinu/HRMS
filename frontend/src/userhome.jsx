@@ -11,18 +11,32 @@ const UserRentedHomesList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/users/api/home')
-      .then((response) => {
-        const availableHomes = response.data.filter(home => home.status === 'rented');
-        setHomes(availableHomes);
+    const fetchUserRentedHomes = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        const userId = localStorage.getItem('userId'); 
+       // console.log('User ID:', userId); 
+
+        if (!userId) {
+          setError("User not logged in.");
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get(`http://localhost:3000/users/api/home/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setHomes(response.data); // Assuming backend filters homes for this user
+      } catch (err) {
+        console.error('Error fetching rented homes:', err.response ? err.response.data : err.message);
+        setError('Failed to load rented homes.');
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Error fetching homes:', err);
-        setError('Failed to load homes.');
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchUserRentedHomes();
   }, []);
 
   const handleViewMore = (homeId) => {
@@ -47,7 +61,7 @@ const UserRentedHomesList = () => {
   return (
     <UserLayout>
       <div className="homes-list">
-        <h1>Rented Homes</h1>
+        <h1>My Rented Homes</h1>
         {homes.length > 0 ? (
           <div className="homes-grid">
             {homes.map((home) => (
@@ -65,14 +79,13 @@ const UserRentedHomesList = () => {
             ))}
           </div>
         ) : (
-          <p>No homes available at the moment.</p>
+          <p>You have not rented any homes yet.</p>
         )}
 
         {isModalOpen && selectedHome && (
           <div style={styles.modalOverlay}>
             <div style={styles.modalContent}>
               <h2>Home Details</h2>
-              
               <p><strong>Location:</strong> {selectedHome.location}</p>
               <p><strong>Price:</strong> {selectedHome.price}</p>
               <p><strong>Category:</strong> {selectedHome.category}</p>
@@ -80,17 +93,6 @@ const UserRentedHomesList = () => {
               <p><strong>Contact Person:</strong> {selectedHome.contactPersonName}</p>
               <p><strong>Contact Email:</strong> {selectedHome.contactPersonEmail}</p>
               <p><strong>Contact Phone:</strong> {selectedHome.contactPersonPhone}</p>
-              <p><strong>Tenant:</strong> 
-                {selectedHome.applicants && selectedHome.applicants.length > 0 ? (
-                  selectedHome.applicants.map((applicant, index) => (
-                    <span key={index} style={{ marginRight: '10px' }}>
-                      {applicant.tenantId.name}
-                    </span>
-                  ))
-                ) : (
-                  <span>No applicants available.</span>
-                )}
-              </p>
               <button onClick={handleCloseModal} style={styles.closeButton}>Close</button>
             </div>
           </div>

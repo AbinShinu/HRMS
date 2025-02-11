@@ -107,7 +107,7 @@ const Dashboard = () => {
 
           {/* Logout */}
           <li>
-            <button onClick={handleLogout}>
+            <button onClick={handleLogout} className="logout-btn">
               <i className="fas fa-sign-out-alt"></i> Logout
             </button>
           </li>
@@ -117,7 +117,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="main-content">
         <div className="header">
-          <h1>Welcome, Admin</h1>
+          <h1>Welcome Admin</h1>
         </div>
         <div className="widgets">
           <div className="homes-widget-container">

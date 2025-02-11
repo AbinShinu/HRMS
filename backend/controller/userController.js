@@ -535,4 +535,23 @@ const countTenants = async (req, res) => {
   }
 };
 
-module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getPendingApplications,approveApplication,deleteApplication,getUserApplications,editHome,getAllApplications,tenanthome,countTenants}
+const userhome = async (req, res) => {
+  const userId = req.params.id; // Get user ID from request parameters
+
+  try {
+    // Fetch homes where the 'applicants' array contains the tenantId matching userId
+    const homes = await Home.find({ 
+      status: 'rented',
+      applicants: { $elemMatch: { tenantId: userId } } 
+    }).populate('applicants.tenantId', 'name email'); // Populate tenant details if needed
+
+    res.json(homes);
+  } catch (error) {
+    console.error('Error fetching user rented homes:', error);
+    res.status(500).json({ message: 'Failed to load rented homes.' });
+  }
+};
+
+
+
+module.exports={getuser,login,adduser,profilesettings,deleteuser,authenticate,getUserById,addHome,gethome,fetchdata,deletehome,counthome,addApplication,countapplication,getPendingApplications,approveApplication,deleteApplication,getUserApplications,editHome,getAllApplications,tenanthome,countTenants,userhome}

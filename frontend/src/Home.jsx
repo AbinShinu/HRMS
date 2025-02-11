@@ -13,7 +13,10 @@ const HomePage = () => {
         const fetchHomes = async () => {
             try {
                 const response = await axios.get('http://localhost:3000/users/api/home');
-                setHomes(response.data); // Update state with fetched data
+                const sortedHomes = response.data
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by latest
+                    .slice(0, 4); // Get only the latest 4 homes
+                setHomes(sortedHomes);
             } catch (error) {
                 console.error('Error fetching homes:', error);
             }
@@ -29,9 +32,7 @@ const HomePage = () => {
     }, []);
 
     const handleViewDetails = (homeId) => {
-         
-            navigate('/login'); // Redirect to login if not logged in
-       
+        navigate('/login'); // Redirect to login if not logged in
     };
 
     return (

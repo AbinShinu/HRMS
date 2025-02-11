@@ -78,7 +78,7 @@ const AdminLayout = ({ children }) => {
       {/* Main Content */}
       <div className="main-content">
         <div className="header">
-          <h1>Welcome, Admin</h1>
+          <h1>Welcome Admin</h1>
         </div>
         {children}
       </div>

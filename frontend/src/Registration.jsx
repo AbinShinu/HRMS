@@ -24,12 +24,12 @@ const FormComponent = () => {
 
   return (
     <div className="form-container">
-      <body className="login">
+      <body >
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2>Sign UP</h2>
         
         <div className="form-group">
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="name">Name</label>
           <input
             type="text"
             id="name"
@@ -40,7 +40,7 @@ const FormComponent = () => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             id="email"
@@ -57,7 +57,7 @@ const FormComponent = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="phone">Phone:</label>
+          <label htmlFor="phone">Phone</label>
           <input
             type="text"
             id="phone"
@@ -68,7 +68,7 @@ const FormComponent = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             id="password"
