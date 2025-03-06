@@ -9,6 +9,7 @@ const HomePage2 = () => {
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [selectedPrice, setSelectedPrice] = useState("All");
     const [selectedHome, setSelectedHome] = useState(null);
+    const [searchLocation, setSearchLocation] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ const HomePage2 = () => {
     }, []);
 
     // Function to filter homes based on selected category and price
-    const filterHomes = (category, price) => {
+    const filterHomes = (category, price, location) => {
         let filtered = homes;
 
         if (category !== "All") {
@@ -41,6 +42,9 @@ const HomePage2 = () => {
             filtered = filtered.filter(home => home.price >= 15000 && home.price <= 50000);
         } else if (price === "above50000") {
             filtered = filtered.filter(home => home.price > 50000);
+        }
+        if (location) {
+            filtered = filtered.filter(home => home.location.toLowerCase().includes(location.toLowerCase()));
         }
 
         setFilteredHomes(filtered);
@@ -69,6 +73,12 @@ const HomePage2 = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedHome(null);
+    };
+
+    const handleLocationChange = (event) => {
+        const location = event.target.value;
+        setSearchLocation(location);
+        filterHomes(selectedCategory, selectedPrice, location);
     };
 
     const handleLogout = () => {
@@ -135,6 +145,14 @@ const HomePage2 = () => {
                         <option value="between15000and50000">₹15,000 - ₹50,000</option>
                         <option value="above50000">Above ₹50,000</option>
                     </select>
+                    <h3>Search by Location</h3>
+                    <input
+                        type="text"
+                        placeholder="Enter location"
+                        value={searchLocation}
+                        onChange={handleLocationChange}
+                        className="location-search"
+                    />
                 </div>
             </div>
 
@@ -163,9 +181,11 @@ const HomePage2 = () => {
                                             <button onClick={() => handleViewDetails(home._id)} className="view-more-btn">
                                                 View Details
                                             </button>
-                                            <button onClick={() => handleBookNow(home._id)} className="book-now-btn">
-                                                Book Now
-                                            </button>
+                                            {home.status === "rented" ? (
+                                                <button className="rented-btn" disabled>Rented</button>
+                                            ) : (
+                                                <button onClick={() => handleBookNow(home._id)} className="book-now-btn">Book Now</button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
